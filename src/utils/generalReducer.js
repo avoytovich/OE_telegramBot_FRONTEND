@@ -1,5 +1,9 @@
 const generalReducer = (state, action) => {
   switch (action.type) {
+  case 'FETCH_GROUP':
+    const changedStateFetchGroup = {...state};
+    changedStateFetchGroup.groups = action.payload;
+    return changedStateFetchGroup;
   case 'CHANGE_SELECTED_MENU_ITEM':
     const changedStateSelectedMenuItem = {...state};
     changedStateSelectedMenuItem.selectedMenuItem = action.payload;

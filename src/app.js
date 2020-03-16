@@ -5,7 +5,7 @@ import LogRocket from 'logrocket';
 import history from './helper/history';
 import Context from './helper/context';
 import generalReducer from './utils/generalReducer';
-import { Home, LandingPage, Test } from './components';
+import { Dashboard, LandingPage, Test } from './components';
 import checkAuth from './helper/redirections';
 
 LogRocket.init('6vridg/test');
@@ -16,17 +16,24 @@ const App = props => {
 
   useEffect(() => {}, []);
 
-  //console.log('store', store);
+  // console.log('store', store);
   return(
     <Context.Provider value={{dispatch, store}}>
       <Router history={history}>
         <Switch>
           <Route path="/bookmark" component={LandingPage} />
+          <Route path="/user/:id/group/:group" render={() => (
+            checkAuth() ? (
+              <Redirect to="/bookmark"/>
+            ) : (
+              <Test />
+            )
+          )}/>
           <Route path="/user/:id" render={() => (
             checkAuth() ? (
               <Redirect to="/bookmark"/>
             ) : (
-              <Home test='test'/>
+              <Dashboard />
             )
           )}/>
           <Route path="/test" render={() => (

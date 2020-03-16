@@ -1,11 +1,11 @@
 import Head from './Header';
-import Home from './Home';
+import Dashboard from './Dashboard';
 import LandingPage from './LandingPage';
 import Test from './Test';
 
 export {
   Head,
-  Home,
+  Dashboard,
   LandingPage,
   Test
 }

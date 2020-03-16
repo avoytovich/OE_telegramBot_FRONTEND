@@ -58,9 +58,10 @@ const LandingPage = props => {
       data: payload,
     });
     const token = get(loginUser, 'data.token');
+    const user_id = get(loginUser, 'data.user_id');
     if (token) {
-      localStorage.setItem('token', JSON.stringify(token));
-      props.history.push('/user/:id');
+      localStorage.setItem('token', token);
+      props.history.push(`/user/${user_id}`);
     } else {
       console.log('Something went wrong...with login');
     }

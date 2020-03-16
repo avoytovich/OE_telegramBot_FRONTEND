@@ -1,10 +1,11 @@
 import axios from 'axios';
 import get from 'lodash/get';
 
-export const getAuthHeaders = () => ({
-  'Access-Token': `${localStorage.getItem('token')}`,
-  'Access-Control-Allow-Origin': '*', // temp
-});
+export const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  const accessCors = {'Access-Control-Allow-Origin': '*'};
+  return token && {'x-access-token': token, ...accessCors} || {...accessCors};
+};
 
 const getDefHeaders = () => ({
   'Content-Type': 'application/json',
