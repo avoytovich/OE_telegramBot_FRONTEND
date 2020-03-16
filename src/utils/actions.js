@@ -1,5 +1,10 @@
 export default (name, payload) => {
   switch (name) {
+  case 'fetchGroup':
+    return {
+      type: 'FETCH_GROUP',
+      payload,
+    }
   case 'removeTitle':
     console.log('tes');
     return {
