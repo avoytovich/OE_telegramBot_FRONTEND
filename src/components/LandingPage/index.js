@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  Grid, Typography, TextField,
-  Button,
-} from '@material-ui/core';
+import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
 
-import {
-  Head
-} from './../../components';
-import { API } from "../../helper/constants";
-import { wrapRequest } from "../../utils/api";
+import { Head } from './../../components';
+import { API } from '../../helper/constants';
+import { wrapRequest } from '../../utils/api';
 
 import './landingPage.sass';
 
@@ -19,28 +14,28 @@ const LandingPage = props => {
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  
+
   const inputFields = [
     {
       label: 'email',
       type: 'email',
-      placeholder: 'your@email.com'
+      placeholder: 'your@email.com',
     },
     {
       label: 'password',
       type: 'password',
-      placeholder: 'your password'
-    }
+      placeholder: 'your password',
+    },
   ];
 
   const handleChange = (value, label) => {
-    switch(label) {
-    case 'email':
-      setEmail(value);
-      break;
-    case 'password':
-      setPassword(value);
-      break;
+    switch (label) {
+      case 'email':
+        setEmail(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
     }
   };
 
@@ -48,13 +43,13 @@ const LandingPage = props => {
     event.preventDefault();
     const payload = {
       email,
-      password
+      password,
     };
     const loginUser = await wrapRequest({
-      method: "POST",
+      method: 'POST',
       url: `${API.URL}:${API.PORT}/login`,
-      mode: "cors",
-      cache: "default",
+      mode: 'cors',
+      cache: 'default',
       data: payload,
     });
     const token = get(loginUser, 'data.token');
@@ -87,30 +82,24 @@ const LandingPage = props => {
                         inputProps={{
                           type: each.type,
                         }}
-                        onChange={(e) => handleChange(e.target.value, each.label)}
+                        onChange={e => handleChange(e.target.value, each.label)}
                         style={{
-                          marginBottom: "5px"
+                          marginBottom: '5px',
                         }}
                         fullWidth
                       />
                     ))}
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                    >
+                    <Button type="submit" variant="contained" color="primary">
                       Log In
                     </Button>
                   </form>
                 </div>
               </Grid>
               <Grid item xs={6} sm={6}>
-                <div
-                  className="landing-about"
-                >
-                  <Typography className='landing-about-content'>
-                    Application allows efficient manage bookmarks
-                    of materials which was chosen by you
+                <div className="landing-about">
+                  <Typography className="landing-about-content">
+                    Application allows efficient manage bookmarks of materials
+                    which was chosen by you
                   </Typography>
                 </div>
               </Grid>
@@ -120,6 +109,6 @@ const LandingPage = props => {
       </Grid>
     </div>
   );
-}
+};
 
 export default withRouter(LandingPage);
