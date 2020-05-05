@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { Button, Table } from 'antd';
@@ -11,7 +11,7 @@ import { wrapRequest } from './../../utils/api';
 import { API } from './../../helper/constants';
 import Head from './../Header';
 import Popover from './../shared/Popover';
-import Add_Group from './../shared/Popover/Add_Group';
+import Add_SubGroup from './../shared/Popover/Add_SubGroup';
 import Search from './../shared/Search';
 
 import './group.sass';
@@ -19,7 +19,9 @@ import './group.sass';
 function Group(props) {
   console.log('Group props', props);
 
+  const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
+  const [newSubGroup, setNewSubGroup] = useState('');
   const [delSubGroups, setDelSubGroups] = useState([]);
 
   const group_id = get(props, 'match.params.group');
@@ -87,6 +89,42 @@ function Group(props) {
       .join()
       .toUpperCase();
 
+  const sendAddSubGroupRequest = useCallback(async () => {
+    if (isSending) return;
+    setIsSending(true);
+    await wrapRequest({
+      method: 'POST',
+      url: `${API.URL}:${
+        API.PORT
+      }/user/${user_id}/group/${group_id}/subgroup_create`,
+      data: { name: newSubGroup },
+      mode: 'cors',
+      cache: 'default',
+    })
+      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
+    setIsSending(false);
+  }, [newSubGroup, exec]);
+
+  const handleChangeAddSubGroup = value => setNewSubGroup(value);
+
+  const sendDeleteSubGroupRequest = useCallback(async () => {
+    if (isSending) return;
+    setIsSending(true);
+    await wrapRequest({
+      method: 'DELETE',
+      url: `${API.URL}:${
+        API.PORT
+      }/user/${user_id}/group/${group_id}/subgroup_delete`,
+      data: delSubGroups,
+      mode: 'cors',
+      cache: 'default',
+    })
+      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
+    setIsSending(false);
+  }, [delSubGroups, exec]);
+
   return (
     <div className="wrapper-group">
       <Grid container spacing={0} justify="center">
@@ -124,15 +162,15 @@ function Group(props) {
                         border: 'red',
                         backgroundColor: 'red',
                       }}
-                      // onClick={sendDeleteGroupRequest}
+                      onClick={sendDeleteSubGroupRequest}
                     >
                       Delete
                     </Button>
                     <Popover title="Add" color="green">
                       {handleClose => (
-                        <Add_Group
-                          // handleChangeAddGroup={handleChangeAddGroup}
-                          // sendAddGroupRequest={sendAddGroupRequest}
+                        <Add_SubGroup
+                          handleChangeAddSubGroup={handleChangeAddSubGroup}
+                          sendAddSubGroupRequest={sendAddSubGroupRequest}
                           handleClose={handleClose}
                         />
                       )}

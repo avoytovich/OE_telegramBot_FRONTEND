@@ -23,7 +23,7 @@ function Head(props) {
     },
   };
 
-  const handleLogOut = () => localStorage.removeItem('token');
+  const handleLogOut = () => localStorage.removeItem('login');
 
   const resolveLink = () => (checkAuth() ? links.signUp : links.logOut);
   const { title, route } = resolveLink();
