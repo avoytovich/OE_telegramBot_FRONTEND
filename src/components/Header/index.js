@@ -11,7 +11,7 @@ import imageAvatar from './../../assets/images/avatar.svg';
 
 import './header.sass';
 
-const Head = props => {
+function Head(props) {
   const links = {
     signUp: {
       title: 'Sign Up',
@@ -85,6 +85,6 @@ const Head = props => {
       </Grid>
     </div>
   );
-};
+}
 
 export default withRouter(Head);

@@ -1,21 +1,36 @@
 import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import { Input } from 'antd';
 
-import connect from './../../utils/connectFunction';
-import action from './../../utils/actions';
+import connect from './../../../utils/connectFunction';
+import action from './../../../utils/actions';
 
-function Test(props) {
-  console.log('Test props', props);
+import './search.sass';
+
+function Search(props) {
+  console.log('Search props', props);
+
+  const { Search } = Input;
 
   useEffect(() => {
     props.dispatchErrorNotifiction('errorNotification', 'hayu');
   }, []);
 
-  return <h1>Test</h1>;
+  return (
+    <div className="dashboard-search">
+      <Search
+        placeholder="input search text"
+        onSearch={value => console.log(value)}
+        style={{
+          width: '50%',
+        }}
+      />
+    </div>
+  );
 }
 
 const mapStateToProps = state => {
-  console.log('Test state');
+  console.log('Search state');
   return { store: state };
 };
 
@@ -30,4 +45,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Test));
+)(withRouter(Search));

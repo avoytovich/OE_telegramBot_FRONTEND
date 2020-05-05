@@ -4,7 +4,7 @@ import { Button } from 'antd';
 
 import './add_group.sass';
 
-const Add_Group = props => {
+function Add_Group(props) {
   return (
     <div className="wrapper-add-group-popover">
       <TextField
@@ -41,6 +41,6 @@ const Add_Group = props => {
       </div>
     </div>
   );
-};
+}
 
 export default Add_Group;

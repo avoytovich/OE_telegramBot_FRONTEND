@@ -8,6 +8,10 @@ const generalReducer = (state, action) => {
       const changedStateErrorNotification = { ...state };
       changedStateErrorNotification.errorNotification = action.payload;
       return changedStateErrorNotification;
+    case 'FETCH_SUBGROUP':
+      const changedStateFetchSubGroup = { ...state };
+      changedStateFetchSubGroup.subGroups = action.payload;
+      return changedStateFetchSubGroup;
     case 'ADD_TITLE':
       const changedStateAddTitle = { ...state };
       changedStateAddTitle.content = [
