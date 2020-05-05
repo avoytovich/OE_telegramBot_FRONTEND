@@ -10,6 +10,11 @@ export default (name, payload) => {
         type: 'ERROR_NOTIFICATION',
         payload,
       };
+    case 'fetchSubGroup':
+      return {
+        type: 'FETCH_SUBGROUP',
+        payload,
+      };
     case 'changedSelectedMenuItem':
       return {
         type: 'CHANGE_SELECTED_MENU_ITEM',

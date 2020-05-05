@@ -11,7 +11,7 @@ import imageAvatar from './../../assets/images/avatar.svg';
 
 import './header.sass';
 
-const Head = props => {
+function Head(props) {
   const links = {
     signUp: {
       title: 'Sign Up',
@@ -23,7 +23,7 @@ const Head = props => {
     },
   };
 
-  const handleLogOut = () => localStorage.removeItem('token');
+  const handleLogOut = () => localStorage.removeItem('login');
 
   const resolveLink = () => (checkAuth() ? links.signUp : links.logOut);
   const { title, route } = resolveLink();
@@ -85,6 +85,6 @@ const Head = props => {
       </Grid>
     </div>
   );
-};
+}
 
 export default withRouter(Head);

@@ -9,7 +9,7 @@ import { wrapRequest } from '../../utils/api';
 
 import './landingPage.sass';
 
-const LandingPage = props => {
+function LandingPage(props) {
   // console.log('props LandingPage', props);
 
   const [email, setEmail] = useState();
@@ -45,6 +45,7 @@ const LandingPage = props => {
       email,
       password,
     };
+    localStorage.setItem('login', null);
     const loginUser = await wrapRequest({
       method: 'POST',
       url: `${API.URL}:${API.PORT}/login`,
@@ -52,10 +53,10 @@ const LandingPage = props => {
       cache: 'default',
       data: payload,
     });
-    const token = get(loginUser, 'data.token');
+    const data = get(loginUser, 'data');
     const user_id = get(loginUser, 'data.user_id');
-    if (token) {
-      localStorage.setItem('token', token);
+    if (data) {
+      localStorage.setItem('login', JSON.stringify(data));
       props.history.push(`/user/${user_id}`);
     } else {
       console.log('Something went wrong...with login');
@@ -109,6 +110,6 @@ const LandingPage = props => {
       </Grid>
     </div>
   );
-};
+}
 
 export default withRouter(LandingPage);

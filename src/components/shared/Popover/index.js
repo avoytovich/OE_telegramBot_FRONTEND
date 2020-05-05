@@ -36,11 +36,11 @@ export default function SimplePopover(props) {
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'top',
+          vertical: 'center',
           horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: 'top',
+          vertical: 'center',
           horizontal: 'center',
         }}
       >

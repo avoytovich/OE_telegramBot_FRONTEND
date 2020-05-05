@@ -1,54 +1,62 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
-import 'antd/dist/antd.css';
 import { Button, Table } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 import { get } from 'lodash';
 
-import Head from './../Header';
-import Popover from './../shared/Popover';
-import Add_Group from './../shared/Popover/Add_Group';
-import Search from './../shared/Search';
 import connect from './../../utils/connectFunction';
 import action from './../../utils/actions';
-import { API } from './../../helper/constants';
 import { wrapRequest } from './../../utils/api';
+import { API } from './../../helper/constants';
+import Head from './../Header';
+import Popover from './../shared/Popover';
+import Add_SubGroup from './../shared/Popover/Add_SubGroup';
+import Search from './../shared/Search';
 
-import './dashboard.sass';
+import './group.sass';
 
-function Dashboard(props) {
-  console.log('Dashboard props', props);
+function Group(props) {
+  console.log('Group props', props);
 
   const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
-  const [newGroup, setNewGroup] = useState('');
-  const [delGroups, setDelGroups] = useState([]);
+  const [newSubGroup, setNewSubGroup] = useState('');
+  const [delSubGroups, setDelSubGroups] = useState([]);
 
+  const group_id = get(props, 'match.params.group');
   const user_id = get(props, 'match.params.id');
+  const groups = get(props, 'store.groups');
 
   useEffect(() => {
-    const fetchGroup = async () => {
-      const getGroup = await wrapRequest({
+    props.dispatchErrorNotifiction('errorNotification', 'haha');
+  }, []);
+
+  useEffect(() => {
+    const fetchSubGroup = async () => {
+      const getSubGroup = await wrapRequest({
         method: 'GET',
-        url: `${API.URL}:${API.PORT}/user/${user_id}/group_list`,
+        url: `${API.URL}:${
+          API.PORT
+        }/user/${user_id}/group/${group_id}/subGroup_list`,
         mode: 'cors',
         cache: 'default',
       });
-      const listGroups = get(getGroup, 'data.groups');
-      props.dispatchFetchGroup('fetchGroup', listGroups);
+      const listSubGroups = get(getSubGroup, 'data.subGroups');
+      props.dispatchFetchSubGroup('fetchSubGroup', listSubGroups);
     };
-    fetchGroup();
+    fetchSubGroup();
   }, [exec]);
 
-  const groups = get(props, 'store.groups');
+  const subGroups = get(props, 'store.subGroups');
 
   const columns = [
     {
-      title: 'Groups',
+      title: 'SubGroups',
       dataIndex: 'id',
       render: text => (
         <Link to={`/user/${user_id}/group/${text}`}>
-          {groups
+          {subGroups
             .filter(each => each.id === text)
             .map(each => each.name)
             .join()}
@@ -56,11 +64,12 @@ function Dashboard(props) {
       ),
     },
   ];
-  const data = groups && groups.map((each, id) => ({ ...each, key: each.id }));
+  const data =
+    subGroups && subGroups.map((each, id) => ({ ...each, key: each.id }));
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      setDelGroups(selectedRows);
+      setDelSubGroups(selectedRows);
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
         'selectedRows: ',
@@ -73,48 +82,68 @@ function Dashboard(props) {
     }),
   };
 
-  const sendAddGroupRequest = useCallback(async () => {
+  const resolveTitle = () =>
+    groups
+      .filter(each => each.id == group_id)
+      .map(each => each.name)
+      .join()
+      .toUpperCase();
+
+  const sendAddSubGroupRequest = useCallback(async () => {
     if (isSending) return;
     setIsSending(true);
     await wrapRequest({
       method: 'POST',
-      url: `${API.URL}:${API.PORT}/user/${user_id}/group_create`,
-      data: { name: newGroup },
+      url: `${API.URL}:${
+        API.PORT
+      }/user/${user_id}/group/${group_id}/subgroup_create`,
+      data: { name: newSubGroup },
       mode: 'cors',
       cache: 'default',
     })
       .then(data => [200, 201].includes(data.status) && setExec(!exec))
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [newGroup, exec]);
+  }, [newSubGroup, exec]);
 
-  const handleChangeAddGroup = value => setNewGroup(value);
+  const handleChangeAddSubGroup = value => setNewSubGroup(value);
 
-  const sendDeleteGroupRequest = useCallback(async () => {
+  const sendDeleteSubGroupRequest = useCallback(async () => {
     if (isSending) return;
     setIsSending(true);
     await wrapRequest({
       method: 'DELETE',
-      url: `${API.URL}:${API.PORT}/user/${user_id}/groups_delete`,
-      data: delGroups,
+      url: `${API.URL}:${
+        API.PORT
+      }/user/${user_id}/group/${group_id}/subgroup_delete`,
+      data: delSubGroups,
       mode: 'cors',
       cache: 'default',
     })
       .then(data => [200, 201].includes(data.status) && setExec(!exec))
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [delGroups, exec]);
+  }, [delSubGroups, exec]);
 
   return (
-    <div className="wrapper-dashboard">
+    <div className="wrapper-group">
       <Grid container spacing={0} justify="center">
         <Grid item xs={12} sm={12}>
-          <div className="container-dashboard">
+          <div className="container-group">
             <Head />
             <Grid container spacing={8} justify="center">
               <Grid item xs={4} sm={4}>
-                <div className="dashboard-group">
-                  <div className="group-links">
+                <div className="group-subgroup">
+                  <div className="group-nav">
+                    <Link to={`/user/${user_id}`}>
+                      <LeftOutlined />
+                      Back
+                    </Link>
+                    <Typography className="group-title">
+                      {resolveTitle()}
+                    </Typography>
+                  </div>
+                  <div className="subgroup-links">
                     {data && (
                       <Table
                         rowSelection={{
@@ -133,15 +162,15 @@ function Dashboard(props) {
                         border: 'red',
                         backgroundColor: 'red',
                       }}
-                      onClick={sendDeleteGroupRequest}
+                      onClick={sendDeleteSubGroupRequest}
                     >
                       Delete
                     </Button>
                     <Popover title="Add" color="green">
                       {handleClose => (
-                        <Add_Group
-                          handleChangeAddGroup={handleChangeAddGroup}
-                          sendAddGroupRequest={sendAddGroupRequest}
+                        <Add_SubGroup
+                          handleChangeAddSubGroup={handleChangeAddSubGroup}
+                          sendAddSubGroupRequest={sendAddSubGroupRequest}
                           handleClose={handleClose}
                         />
                       )}
@@ -161,13 +190,14 @@ function Dashboard(props) {
 }
 
 const mapStateToProps = state => {
+  console.log('group state', state);
   return { store: state };
 };
 
 const mapDispatchToProps = dispatch => {
   const actionData = (name, payload) => dispatch(action(name, payload));
   return {
-    dispatchFetchGroup: actionData,
+    dispatchFetchSubGroup: actionData,
     dispatchErrorNotifiction: actionData,
   };
 };
@@ -175,4 +205,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Dashboard));
+)(withRouter(Group));
