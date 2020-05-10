@@ -4,24 +4,22 @@ const generalReducer = (state, action) => {
       const changedStateFetchGroup = { ...state };
       changedStateFetchGroup.groups = action.payload;
       return changedStateFetchGroup;
-    case 'ERROR_NOTIFICATION':
-      const changedStateErrorNotification = { ...state };
-      changedStateErrorNotification.errorNotification = action.payload;
-      return changedStateErrorNotification;
     case 'FETCH_SUBGROUP':
       const changedStateFetchSubGroup = { ...state };
       changedStateFetchSubGroup.subGroups = action.payload;
       return changedStateFetchSubGroup;
-    case 'ADD_TITLE':
-      const changedStateAddTitle = { ...state };
-      changedStateAddTitle.content = [
-        ...state.content,
-        {
-          title: action.payload,
-          links: [],
-        },
-      ];
-      return changedStateAddTitle;
+    case 'FETCH_BOOKMARK':
+      const changedStateFetchBookmark = { ...state };
+      changedStateFetchBookmark.bookmarks = action.payload;
+      return changedStateFetchBookmark;
+    case 'ERROR_NOTIFICATION':
+      const changedStateErrorNotification = { ...state };
+      changedStateErrorNotification.errorNotification = action.payload;
+      return changedStateErrorNotification;
+    case 'SUCCESS_NOTIFICATION':
+      const changedStateSuccessNotification = { ...state };
+      changedStateSuccessNotification.successNotification = action.payload;
+      return changedStateSuccessNotification;
     case 'REMOVE_TITLE':
       const changedStateRemoveTitle = { ...state };
       changedStateRemoveTitle.content = state.content.filter(

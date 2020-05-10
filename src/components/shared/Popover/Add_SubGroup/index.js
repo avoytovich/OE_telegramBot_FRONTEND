@@ -1,44 +1,89 @@
-import React from 'react';
-import { TextField } from '@material-ui/core';
-import { Button } from 'antd';
+import React, { useEffect } from 'react';
+import { Button, Form, Input } from 'antd';
 
 import './add_subgroup.sass';
 
 function Add_Subgroup(props) {
+  const layout = {
+    labelCol: {
+      span: 8,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+  const tailLayout = {
+    wrapperCol: {
+      offset: 8,
+      span: 16,
+    },
+  };
+
+  const onFinish = values => {
+    console.log('Success:', values);
+    props.sendAddSubGroupRequest();
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
+
+  useEffect(() => {
+    if (!props.close) {
+      props.handleClose();
+      props.setClose(!props.close);
+    }
+  }, [props.close]);
+
   return (
     <div className="wrapper-add-subgroup-popover">
-      <TextField
-        label="Add Subgroup"
-        placeholder="type subgroup name..."
-        inputProps={{
-          type: 'text',
+      <Form
+        {...layout}
+        name="basic"
+        initialValues={{
+          remember: true,
         }}
-        onChange={e => props.handleChangeAddSubGroup(e.target.value)}
-      />
-      <div className="buttons-container">
-        <Button
-          type="primary"
-          style={{
-            margin: '10px',
-            border: 'green',
-            backgroundColor: 'green',
-          }}
-          onClick={props.sendAddSubGroupRequest}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          label="subgroup"
+          name="title"
+          rules={[
+            {
+              required: true,
+              message: 'Please input title!',
+            },
+          ]}
+          onChange={e => props.handleChangeAddSubGroup(e.target.value)}
         >
-          Add
-        </Button>
-        <Button
-          type="primary"
-          style={{
-            margin: '10px',
-            border: 'red',
-            backgroundColor: 'red',
-          }}
-          onClick={props.handleClose}
-        >
-          Cancel
-        </Button>
-      </div>
+          <Input />
+        </Form.Item>
+        <Form.Item {...tailLayout}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              margin: '10px',
+              border: 'green',
+              backgroundColor: 'green',
+            }}
+          >
+            Add
+          </Button>
+          <Button
+            type="primary"
+            style={{
+              margin: '10px',
+              border: 'red',
+              backgroundColor: 'red',
+            }}
+            onClick={props.handleClose}
+          >
+            Cancel
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }

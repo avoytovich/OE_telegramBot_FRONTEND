@@ -11,51 +11,56 @@ import { wrapRequest } from './../../utils/api';
 import { API } from './../../helper/constants';
 import Head from './../Header';
 import Popover from './../shared/Popover';
-import Add_SubGroup from './../shared/Popover/Add_SubGroup';
+import Add_Bookmark from './../shared/Popover/Add_Bookmark';
 import Search from './../shared/Search';
 
-import './group.sass';
+import './subgroup.sass';
 
-function Group(props) {
-  console.log('Group props', props);
+function SubGroup(props) {
+  console.log('SubGroup props', props);
 
   const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
   const [close, setClose] = useState(true);
-  const [newSubGroup, setNewSubGroup] = useState('');
-  const [delSubGroups, setDelSubGroups] = useState([]);
+  const [newBookmark, setNewBookmark] = useState({
+    title: '',
+    link: '',
+    searchWords: [],
+  });
+  const [delBookmarks, setDelBookmarks] = useState([]);
 
   const user_id = get(props, 'match.params.id');
   const group_id = get(props, 'match.params.group');
-  const groups = get(props, 'store.groups');
+  const subGroup_id = get(props, 'match.params.subgroup');
+  const subGroups = get(props, 'store.subGroups');
 
   useEffect(() => {
-    const fetchSubGroup = async () => {
-      const getSubGroup = await wrapRequest({
+    const fetchBookmarks = async () => {
+      const getBookmarks = await wrapRequest({
         method: 'GET',
         url: `${API.URL}:${
           API.PORT
-        }/user/${user_id}/group/${group_id}/subGroup_list`,
+        }/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark_list`,
         mode: 'cors',
         cache: 'default',
       });
-      const listSubGroups = get(getSubGroup, 'data.subGroups');
-      props.dispatchFetchSubGroup('fetchSubGroup', listSubGroups);
+      const listBookmarks = get(getBookmarks, 'data.bookmarks');
+      props.dispatchFetchBookmarks('fetchBookmark', listBookmarks);
     };
-    fetchSubGroup();
+    fetchBookmarks();
   }, [exec]);
 
-  const subGroups = get(props, 'store.subGroups');
+  const bookmarks = get(props, 'store.bookmarks');
 
   const columns = [
     {
-      title: 'SubGroups',
+      title: 'Bookmarks',
       dataIndex: 'id',
       render: text => (
         <Link to={`/user/${user_id}/group/${group_id}/subgroup/${text}`}>
-          {subGroups
+          {bookmarks
             .filter(each => each.id === text)
-            .map(each => each.name)
+            .map(each => each.title)
             .join()}
         </Link>
       ),
@@ -63,12 +68,12 @@ function Group(props) {
   ];
 
   const data =
-    subGroups && subGroups.map((each, id) => ({ ...each, key: each.id }));
+    bookmarks && bookmarks.map((each, id) => ({ ...each, key: each.id }));
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      const preDelSubGroups = selectedRows.filter(each => each !== undefined);
-      setDelSubGroups(preDelSubGroups);
+      const preDelBookmarks = selectedRows.filter(each => each !== undefined);
+      setDelBookmarks(preDelBookmarks);
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
         'selectedRows: ',
@@ -82,21 +87,21 @@ function Group(props) {
   };
 
   const resolveTitle = () =>
-    groups
-      .filter(each => each.id == group_id)
+    subGroups
+      .filter(each => each.id == subGroup_id)
       .map(each => each.name)
       .join()
       .toUpperCase();
 
-  const sendAddSubGroupRequest = useCallback(async () => {
+  const sendAddBookmarkRequest = useCallback(async () => {
     if (isSending) return;
     setIsSending(true);
     await wrapRequest({
       method: 'POST',
       url: `${API.URL}:${
         API.PORT
-      }/user/${user_id}/group/${group_id}/subgroup_create`,
-      data: { name: newSubGroup },
+      }/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark_create`,
+      data: newBookmark,
       mode: 'cors',
       cache: 'default',
     })
@@ -111,46 +116,51 @@ function Group(props) {
       })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [newSubGroup, exec]);
+  }, [newBookmark, exec]);
 
-  const handleChangeAddSubGroup = value => setNewSubGroup(value);
+  const handleChangeAddBookmarkTitle = value =>
+    setNewBookmark({ ...newBookmark, title: value });
+  const handleChangeAddBookmarkLink = value =>
+    setNewBookmark({ ...newBookmark, link: value });
+  const handleChangeAddBookmarkSearchWords = value =>
+    setNewBookmark({ ...newBookmark, searchWords: value.split(' ') });
 
-  const sendDeleteSubGroupRequest = useCallback(async () => {
+  const sendDeleteBookmarkRequest = useCallback(async () => {
     if (isSending) return;
     setIsSending(true);
     await wrapRequest({
       method: 'DELETE',
       url: `${API.URL}:${
         API.PORT
-      }/user/${user_id}/group/${group_id}/subgroup_delete`,
-      data: delSubGroups,
+      }/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark_delete`,
+      data: delBookmarks,
       mode: 'cors',
       cache: 'default',
     })
       .then(data => [200, 201].includes(data.status) && setExec(!exec))
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [delSubGroups, exec]);
+  }, [delBookmarks, exec]);
 
   return (
-    <div className="wrapper-group">
+    <div className="wrapper-subgroup">
       <Grid container spacing={0} justify="center">
         <Grid item xs={12} sm={12}>
-          <div className="container-group">
+          <div className="container-subgroup">
             <Head />
             <Grid container spacing={8} justify="center">
               <Grid item xs={4} sm={4}>
-                <div className="group-subgroup">
-                  <div className="group-nav">
-                    <Link to={`/user/${user_id}`}>
+                <div className="subgroup-bookmark">
+                  <div className="subgroup-nav">
+                    <Link to={`/user/${user_id}/group/${group_id}`}>
                       <LeftOutlined />
                       Back
                     </Link>
-                    <Typography className="group-title">
+                    <Typography className="subgroup-title">
                       {resolveTitle()}
                     </Typography>
                   </div>
-                  <div className="subgroup-links">
+                  <div className="bookmark-links">
                     {data && (
                       <Table
                         rowSelection={{
@@ -162,22 +172,30 @@ function Group(props) {
                       />
                     )}
                   </div>
-                  <div className="group-nav">
+                  <div className="subgroup-nav">
                     <Button
                       type="primary"
                       style={{
                         border: 'red',
                         backgroundColor: 'red',
                       }}
-                      onClick={sendDeleteSubGroupRequest}
+                      onClick={sendDeleteBookmarkRequest}
                     >
                       Delete
                     </Button>
                     <Popover title="Add" color="green">
                       {handleClose => (
-                        <Add_SubGroup
-                          handleChangeAddSubGroup={handleChangeAddSubGroup}
-                          sendAddSubGroupRequest={sendAddSubGroupRequest}
+                        <Add_Bookmark
+                          handleChangeAddBookmarkTitle={
+                            handleChangeAddBookmarkTitle
+                          }
+                          handleChangeAddBookmarkLink={
+                            handleChangeAddBookmarkLink
+                          }
+                          handleChangeAddBookmarkSearchWords={
+                            handleChangeAddBookmarkSearchWords
+                          }
+                          sendAddBookmarkRequest={sendAddBookmarkRequest}
                           close={close}
                           setClose={setClose}
                           handleClose={handleClose}
@@ -199,14 +217,14 @@ function Group(props) {
 }
 
 const mapStateToProps = state => {
-  console.log('group state', state);
+  console.log('subGroup state');
   return { store: state };
 };
 
 const mapDispatchToProps = dispatch => {
   const actionData = (name, payload) => dispatch(action(name, payload));
   return {
-    dispatchFetchSubGroup: actionData,
+    dispatchFetchBookmarks: actionData,
     dispatchErrorNotifiction: actionData,
     dispatchSuccessNotifiction: actionData,
   };
@@ -215,4 +233,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Group));
+)(withRouter(SubGroup));

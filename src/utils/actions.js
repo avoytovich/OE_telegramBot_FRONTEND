@@ -5,19 +5,24 @@ export default (name, payload) => {
         type: 'FETCH_GROUP',
         payload,
       };
-    case 'errorNotification':
-      return {
-        type: 'ERROR_NOTIFICATION',
-        payload,
-      };
     case 'fetchSubGroup':
       return {
         type: 'FETCH_SUBGROUP',
         payload,
       };
-    case 'changedSelectedMenuItem':
+    case 'fetchBookmark':
       return {
-        type: 'CHANGE_SELECTED_MENU_ITEM',
+        type: 'FETCH_BOOKMARK',
+        payload,
+      };
+    case 'errorNotification':
+      return {
+        type: 'ERROR_NOTIFICATION',
+        payload,
+      };
+    case 'successNotification':
+      return {
+        type: 'SUCCESS_NOTIFICATION',
         payload,
       };
   }
