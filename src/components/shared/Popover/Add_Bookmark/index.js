@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Input } from 'antd';
 
-import './add_group.sass';
+import './add_bookmark.sass';
 
-function Add_Group(props) {
+function Add_Bookmark(props) {
   const layout = {
     labelCol: {
       span: 8,
@@ -21,7 +21,7 @@ function Add_Group(props) {
 
   const onFinish = values => {
     console.log('Success:', values);
-    props.sendAddGroupRequest();
+    props.sendAddBookmarkRequest();
   };
 
   const onFinishFailed = errorInfo => {
@@ -36,7 +36,7 @@ function Add_Group(props) {
   }, [props.close]);
 
   return (
-    <div className="wrapper-add-group-popover">
+    <div className="wrapper-add-bookmark-popover">
       <Form
         {...layout}
         name="basic"
@@ -47,7 +47,7 @@ function Add_Group(props) {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="group"
+          label="bookmark"
           name="title"
           rules={[
             {
@@ -55,7 +55,35 @@ function Add_Group(props) {
               message: 'Please input title!',
             },
           ]}
-          onChange={e => props.handleChangeAddGroup(e.target.value)}
+          onChange={e => props.handleChangeAddBookmarkTitle(e.target.value)}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="link"
+          name="link"
+          rules={[
+            {
+              required: true,
+              message: 'Please input link!',
+            },
+          ]}
+          onChange={e => props.handleChangeAddBookmarkLink(e.target.value)}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="search words"
+          name="search_words"
+          rules={[
+            {
+              required: true,
+              message: 'Please input link!',
+            },
+          ]}
+          onChange={e =>
+            props.handleChangeAddBookmarkSearchWords(e.target.value)
+          }
         >
           <Input />
         </Form.Item>
@@ -88,4 +116,4 @@ function Add_Group(props) {
   );
 }
 
-export default Add_Group;
+export default Add_Bookmark;

@@ -9,9 +9,11 @@ function Notification(props) {
 
   const [right, setRight] = useState('-100%');
 
-  useEffect(() => showNotification, [props.store.errorNotification]);
+  useEffect(() => showErrorNotification, [props.store.errorNotification]);
 
-  const showNotification = () => {
+  useEffect(() => showSuccessNotification, [props.store.successNotification]);
+
+  const showErrorNotification = () => {
     setRight('16px');
     setTimeout(() => {
       props.dispatchErrorNotification('errorNotification', null);
@@ -19,20 +21,47 @@ function Notification(props) {
     }, 3000);
   };
 
+  const showSuccessNotification = () => {
+    setRight('16px');
+    setTimeout(() => {
+      props.dispatchSuccessNotifiction('successNotification', null);
+      setRight('-100%');
+    }, 3000);
+  };
+
+  const errorNotification = message => (
+    <div
+      className="wrapper-notification"
+      style={{
+        position: 'absolute',
+        top: '96px',
+        right: right,
+        backgroundColor: 'red',
+      }}
+    >
+      {message}
+    </div>
+  );
+
+  const successNotification = message => (
+    <div
+      className="wrapper-notification"
+      style={{
+        position: 'absolute',
+        top: '96px',
+        right: right,
+        backgroundColor: 'green',
+      }}
+    >
+      {message}
+    </div>
+  );
+
   return (
-    (props.store.errorNotification && (
-      <div
-        className="wrapper-notification"
-        style={{
-          position: 'absolute',
-          top: '96px',
-          right: right,
-          backgroundColor: 'red',
-        }}
-      >
-        {props.store.errorNotification.message}
-      </div>
-    )) ||
+    (props.store.errorNotification &&
+      errorNotification(props.store.errorNotification.message)) ||
+    (props.store.successNotification &&
+      successNotification(props.store.successNotification.message)) ||
     null
   );
 }
@@ -45,6 +74,7 @@ const mapDispatchToProps = dispatch => {
   const actionData = (name, payload) => dispatch(action(name, payload));
   return {
     dispatchErrorNotification: actionData,
+    dispatchSuccessNotifiction: actionData,
   };
 };
 

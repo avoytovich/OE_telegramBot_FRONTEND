@@ -13,7 +13,9 @@ function Search(props) {
   const { Search } = Input;
 
   useEffect(() => {
-    props.dispatchErrorNotifiction('errorNotification', 'hayu');
+    props.dispatchErrorNotifiction('errorNotification', {
+      message: 'hayu-search',
+    });
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import 'antd/dist/antd.css';
 import { Button, Table } from 'antd';
 import { get } from 'lodash';
@@ -21,6 +21,7 @@ function Dashboard(props) {
 
   const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
+  const [close, setClose] = useState(true);
   const [newGroup, setNewGroup] = useState('');
   const [delGroups, setDelGroups] = useState([]);
 
@@ -60,7 +61,8 @@ function Dashboard(props) {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      setDelGroups(selectedRows);
+      const preDelGroups = selectedRows.filter(each => each !== undefined);
+      setDelGroups(preDelGroups);
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
         'selectedRows: ',
@@ -83,7 +85,15 @@ function Dashboard(props) {
       mode: 'cors',
       cache: 'default',
     })
-      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .then(data => {
+        if ([200, 201].includes(data.status)) {
+          setExec(!exec);
+          setClose(false);
+          props.dispatchSuccessNotifiction('successNotification', {
+            message: data.data.message,
+          });
+        }
+      })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
   }, [newGroup, exec]);
@@ -142,6 +152,8 @@ function Dashboard(props) {
                         <Add_Group
                           handleChangeAddGroup={handleChangeAddGroup}
                           sendAddGroupRequest={sendAddGroupRequest}
+                          close={close}
+                          setClose={setClose}
                           handleClose={handleClose}
                         />
                       )}
@@ -169,6 +181,7 @@ const mapDispatchToProps = dispatch => {
   return {
     dispatchFetchGroup: actionData,
     dispatchErrorNotifiction: actionData,
+    dispatchSuccessNotifiction: actionData,
   };
 };
 
