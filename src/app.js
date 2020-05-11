@@ -5,7 +5,14 @@ import LogRocket from 'logrocket';
 import history from './helper/history';
 import Context from './helper/context';
 import generalReducer from './utils/generalReducer';
-import { Dashboard, Group, SubGroup, LandingPage, Test } from './components';
+import {
+  Dashboard,
+  Group,
+  SubGroup,
+  Bookmark,
+  LandingPage,
+  Test,
+} from './components';
 import Notification from './components/shared/Notification';
 import checkAuth from './helper/redirections';
 
@@ -21,6 +28,12 @@ function App(props) {
     <Context.Provider value={{ dispatch, store }}>
       <Router history={history}>
         <Switch>
+          <Route
+            path="/user/:id/group/:group/subgroup/:subgroup/bookmark/:bookmark"
+            render={() =>
+              checkAuth() ? <Redirect to="/bookmark" /> : <Bookmark />
+            }
+          />
           <Route
             path="/user/:id/group/:group/subgroup/:subgroup"
             render={() =>

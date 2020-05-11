@@ -57,7 +57,9 @@ function SubGroup(props) {
       title: 'Bookmarks',
       dataIndex: 'id',
       render: text => (
-        <Link to={`/user/${user_id}/group/${group_id}/subgroup/${text}`}>
+        <Link
+          to={`/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark/${text}`}
+        >
           {bookmarks
             .filter(each => each.id === text)
             .map(each => each.title)
