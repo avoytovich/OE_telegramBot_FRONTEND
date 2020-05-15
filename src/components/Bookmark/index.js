@@ -25,25 +25,44 @@ function Bookmark(props) {
     props.dispatchErrorNotifiction('errorNotification', { message: 'hayu' });
   }, []);
 
-  const resolveTitle = () =>
-    `${groups
-      .filter(each => each.id == group_id)
-      .map(each => each.name)
-      .join()
-      .toUpperCase()} / 
-    ${subGroups
-      .filter(each => each.id == subGroup_id)
-      .map(each => each.name)
-      .join()
-      .toUpperCase()}`;
+  const resolveTitle = () => {
+    const { searchSubGroup } = props.store;
+    if (searchSubGroup) {
+      return `${groups
+        .filter(each => each.id == group_id)
+        .map(each => each.name)
+        .join()
+        .toUpperCase()} / ${searchSubGroup
+        .filter(each => each.id == subGroup_id)
+        .map(each => each.name)[0]
+        .toUpperCase()}`;
+    } else {
+      return `${groups
+        .filter(each => each.id == group_id)
+        .map(each => each.name)
+        .join()
+        .toUpperCase()} / ${subGroups
+        .filter(each => each.id == subGroup_id)
+        .map(each => each.name)
+        .join()
+        .toUpperCase()}`;
+    }
+  };
 
-  const resolveSrc = () =>
-    bookmarks
-      .filter(each => each.id == bookmark_id)
-      .map(each => each.link)
-      .join();
-
-  console.log('resolveSrc', resolveSrc());
+  const resolveSrc = () => {
+    const { searchBookmark } = props.store;
+    if (searchBookmark) {
+      return searchBookmark
+        .filter(each => each.id == bookmark_id)
+        .map(each => each.link)
+        .join();
+    } else {
+      return bookmarks
+        .filter(each => each.id == bookmark_id)
+        .map(each => each.link)
+        .join();
+    }
+  };
 
   return (
     <div className="wrapper-bookmark">
@@ -56,7 +75,11 @@ function Bookmark(props) {
                 <div className="bookmark-with-nav">
                   <div className="bookmark-nav">
                     <Link
-                      to={`/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}`}
+                      to={
+                        subGroups
+                          ? `/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}`
+                          : `/user/${user_id}`
+                      }
                     >
                       <LeftOutlined />
                       Back
