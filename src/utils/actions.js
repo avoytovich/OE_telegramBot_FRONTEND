@@ -15,6 +15,21 @@ export default (name, payload) => {
         type: 'FETCH_BOOKMARK',
         payload,
       };
+    case 'searchBookmark':
+      return {
+        type: 'SEARCH_BOOKMARK',
+        payload,
+      };
+    case 'searchSubGroup':
+      return {
+        type: 'SEARCH_SUBGROUP',
+        payload,
+      };
+    case 'resolveDescription':
+      return {
+        type: 'RESOLVE_DESCRIPTION',
+        payload,
+      };
     case 'errorNotification':
       return {
         type: 'ERROR_NOTIFICATION',
