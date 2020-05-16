@@ -10,7 +10,7 @@ const T = {
 // PROD
 const API = {
   URL: 'https',
-  PORT: '//bookmark-back-end.herokuapp.com/',
+  PORT: '//bookmark-back-end.herokuapp.com',
 };
 
 export { T, API };
