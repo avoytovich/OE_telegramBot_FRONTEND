@@ -5,7 +5,7 @@ import action from './../../../utils/actions';
 import './notification.sass';
 
 function Notification(props) {
-  console.log('Notification props', props);
+  // console.log('Notification props', props);
 
   const [right, setRight] = useState('-100%');
 

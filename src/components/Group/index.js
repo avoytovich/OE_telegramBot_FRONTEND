@@ -17,7 +17,7 @@ import Search from './../shared/Search';
 import './group.sass';
 
 function Group(props) {
-  console.log('Group props', props);
+  // console.log('Group props', props);
 
   const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
@@ -33,8 +33,8 @@ function Group(props) {
     const fetchSubGroup = async () => {
       const getSubGroup = await wrapRequest({
         method: 'GET',
-        url: `${API.URL}:${
-          API.PORT
+        url: `${
+          API.URL[process.env.NODE_ENV]
         }/user/${user_id}/group/${group_id}/subGroup_list`,
         mode: 'cors',
         cache: 'default',
@@ -69,11 +69,11 @@ function Group(props) {
     onChange: (selectedRowKeys, selectedRows) => {
       const preDelSubGroups = selectedRows.filter(each => each !== undefined);
       setDelSubGroups(preDelSubGroups);
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      );
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   'selectedRows: ',
+      //   selectedRows
+      // );
     },
     getCheckboxProps: record => ({
       disabled: record.name === 'Disabled User',
@@ -93,8 +93,8 @@ function Group(props) {
     setIsSending(true);
     await wrapRequest({
       method: 'POST',
-      url: `${API.URL}:${
-        API.PORT
+      url: `${
+        API.URL[process.env.NODE_ENV]
       }/user/${user_id}/group/${group_id}/subgroup_create`,
       data: { name: newSubGroup },
       mode: 'cors',
@@ -120,8 +120,8 @@ function Group(props) {
     setIsSending(true);
     await wrapRequest({
       method: 'DELETE',
-      url: `${API.URL}:${
-        API.PORT
+      url: `${
+        API.URL[process.env.NODE_ENV]
       }/user/${user_id}/group/${group_id}/subgroup_delete`,
       data: delSubGroups,
       mode: 'cors',
@@ -199,7 +199,7 @@ function Group(props) {
 }
 
 const mapStateToProps = state => {
-  console.log('group state', state);
+  // console.log('group state', state);
   return { store: state };
 };
 

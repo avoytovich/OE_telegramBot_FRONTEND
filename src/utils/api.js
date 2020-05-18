@@ -14,7 +14,7 @@ const execRefreshToken = () => {
   axios({
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
-    url: `${API.URL}:${API.PORT}/token`,
+    url: `${API.URL[process.env.NODE_ENV]}/token`,
     mode: 'cors',
     cache: 'default',
     data: {

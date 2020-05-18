@@ -5,7 +5,7 @@ import connect from './../../utils/connectFunction';
 import action from './../../utils/actions';
 
 function Test(props) {
-  console.log('Test props', props);
+  // console.log('Test props', props);
 
   useEffect(() => {
     props.dispatchErrorNotifiction('errorNotification', { message: 'hayu' });
@@ -15,7 +15,7 @@ function Test(props) {
 }
 
 const mapStateToProps = state => {
-  console.log('Test state');
+  // console.log('Test state');
   return { store: state };
 };
 

@@ -11,7 +11,7 @@ import { get } from 'lodash';
 import './search.sass';
 
 function Search(props) {
-  console.log('Search props', props);
+  // console.log('Search props', props);
 
   const { Search } = Input;
 
@@ -25,7 +25,7 @@ function Search(props) {
       searchBookmark.forEach(each => {
         wrapRequest({
           method: 'GET',
-          url: `${API.URL}:${API.PORT}/user/${user_id}/subgroup/${
+          url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/subgroup/${
             each.SubGroupOfBookmarksId
           }`,
           mode: 'cors',
@@ -59,7 +59,9 @@ function Search(props) {
   const onSearch = async value => {
     await wrapRequest({
       method: 'GET',
-      url: `${API.URL}:${API.PORT}/user/${user_id}/search?searchWords=${value}`,
+      url: `${
+        API.URL[process.env.NODE_ENV]
+      }/user/${user_id}/search?searchWords=${value}`,
       mode: 'cors',
       cache: 'default',
     })
@@ -114,7 +116,7 @@ function Search(props) {
 }
 
 const mapStateToProps = state => {
-  console.log('Search state');
+  // console.log('Search state');
   return { store: state };
 };
 
