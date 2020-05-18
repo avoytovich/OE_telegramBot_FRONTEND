@@ -11,7 +11,7 @@ import Head from './../Header';
 import './bookmark.sass';
 
 function Bookmark(props) {
-  console.log('Bookmark props', props);
+  //console.log('Bookmark props', props);
 
   const user_id = get(props, 'match.params.id');
   const group_id = get(props, 'match.params.group');
@@ -102,7 +102,7 @@ function Bookmark(props) {
 }
 
 const mapStateToProps = state => {
-  console.log('Bookmark state');
+  // console.log('Bookmark state');
   return { store: state };
 };
 

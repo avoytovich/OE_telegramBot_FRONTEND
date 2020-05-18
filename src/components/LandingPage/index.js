@@ -48,7 +48,7 @@ function LandingPage(props) {
     localStorage.setItem('login', null);
     const loginUser = await wrapRequest({
       method: 'POST',
-      url: `${API.URL}:${API.PORT}/login`,
+      url: `${API.URL[process.env.NODE_ENV]}/login`,
       mode: 'cors',
       cache: 'default',
       data: payload,

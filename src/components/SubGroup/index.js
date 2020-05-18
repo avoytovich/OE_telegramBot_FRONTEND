@@ -17,7 +17,7 @@ import Search from './../shared/Search';
 import './subgroup.sass';
 
 function SubGroup(props) {
-  console.log('SubGroup props', props);
+  // console.log('SubGroup props', props);
 
   const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
@@ -38,8 +38,8 @@ function SubGroup(props) {
     const fetchBookmarks = async () => {
       const getBookmarks = await wrapRequest({
         method: 'GET',
-        url: `${API.URL}:${
-          API.PORT
+        url: `${
+          API.URL[process.env.NODE_ENV]
         }/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark_list`,
         mode: 'cors',
         cache: 'default',
@@ -76,11 +76,11 @@ function SubGroup(props) {
     onChange: (selectedRowKeys, selectedRows) => {
       const preDelBookmarks = selectedRows.filter(each => each !== undefined);
       setDelBookmarks(preDelBookmarks);
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      );
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   'selectedRows: ',
+      //   selectedRows
+      // );
     },
     getCheckboxProps: record => ({
       disabled: record.name === 'Disabled User',
@@ -100,8 +100,8 @@ function SubGroup(props) {
     setIsSending(true);
     await wrapRequest({
       method: 'POST',
-      url: `${API.URL}:${
-        API.PORT
+      url: `${
+        API.URL[process.env.NODE_ENV]
       }/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark_create`,
       data: newBookmark,
       mode: 'cors',
@@ -132,8 +132,8 @@ function SubGroup(props) {
     setIsSending(true);
     await wrapRequest({
       method: 'DELETE',
-      url: `${API.URL}:${
-        API.PORT
+      url: `${
+        API.URL[process.env.NODE_ENV]
       }/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark_delete`,
       data: delBookmarks,
       mode: 'cors',
@@ -219,7 +219,7 @@ function SubGroup(props) {
 }
 
 const mapStateToProps = state => {
-  console.log('subGroup state');
+  // console.log('subGroup state');
   return { store: state };
 };
 

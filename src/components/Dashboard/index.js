@@ -17,7 +17,7 @@ import { wrapRequest } from './../../utils/api';
 import './dashboard.sass';
 
 function Dashboard(props) {
-  console.log('Dashboard props', props);
+  // console.log('Dashboard props', props);
 
   const [isSending, setIsSending] = useState(false);
   const [exec, setExec] = useState(false);
@@ -31,7 +31,7 @@ function Dashboard(props) {
     const fetchGroup = async () => {
       const getGroup = await wrapRequest({
         method: 'GET',
-        url: `${API.URL}:${API.PORT}/user/${user_id}/group_list`,
+        url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/group_list`,
         mode: 'cors',
         cache: 'default',
       });
@@ -63,11 +63,11 @@ function Dashboard(props) {
     onChange: (selectedRowKeys, selectedRows) => {
       const preDelGroups = selectedRows.filter(each => each !== undefined);
       setDelGroups(preDelGroups);
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows
-      );
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   'selectedRows: ',
+      //   selectedRows
+      // );
     },
     getCheckboxProps: record => ({
       disabled: record.name === 'Disabled User',
@@ -80,7 +80,7 @@ function Dashboard(props) {
     setIsSending(true);
     await wrapRequest({
       method: 'POST',
-      url: `${API.URL}:${API.PORT}/user/${user_id}/group_create`,
+      url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/group_create`,
       data: { name: newGroup },
       mode: 'cors',
       cache: 'default',
@@ -105,7 +105,7 @@ function Dashboard(props) {
     setIsSending(true);
     await wrapRequest({
       method: 'DELETE',
-      url: `${API.URL}:${API.PORT}/user/${user_id}/groups_delete`,
+      url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/groups_delete`,
       data: delGroups,
       mode: 'cors',
       cache: 'default',
