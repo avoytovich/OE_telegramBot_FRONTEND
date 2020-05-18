@@ -6,10 +6,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   devServer: {
-    contentBase: "./build",
+    contentBase: './build',
   },
   devtool: 'inline-source-map',
   module: {
@@ -25,43 +25,38 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'less-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'less-loader'],
       },
       {
         test: /\.sass$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'less-loader',
-          'sass-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'less-loader', 'sass-loader'],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/,
         use: [
           {
             loader: 'url-loader',
-            options: { 
+            options: {
               limit: 20000,
-            }
+            },
           },
-          'image-webpack-loader'
-        ]
+          'image-webpack-loader',
+        ],
       },
-    ]
+      {
+        test: /\.ico$/,
+        loader: 'file-loader?name=[name].[ext]', // <-- retain original file name
+      },
+    ],
   },
   resolve: {
     alias: {
       Helper: path.resolve(__dirname, 'src/helper/'),
-    }
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve('./index.html'),
     }),
-  ]
+  ],
 };

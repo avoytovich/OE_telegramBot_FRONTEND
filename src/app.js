@@ -15,6 +15,7 @@ import {
 } from './components';
 import Notification from './components/shared/Notification';
 import checkAuth from './helper/redirections';
+require('./assets/images/favicon.ico');
 
 LogRocket.init('6vridg/test');
 
