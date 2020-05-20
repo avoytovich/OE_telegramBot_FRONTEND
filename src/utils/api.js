@@ -56,6 +56,7 @@ const flowRefreshToken = token => {
     } else {
       setTimeout(() => {
         token = get(JSON.parse(localStorage.getItem('login')), 'token');
+        if (!token) return;
         setInterval(
           () => execRefreshToken(),
           getExpirationDate(token) - Date.now() - 10000

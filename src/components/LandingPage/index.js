@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
@@ -6,6 +6,8 @@ import { get } from 'lodash';
 import { Head } from './../../components';
 import { API } from '../../helper/constants';
 import { wrapRequest } from '../../utils/api';
+import connect from './../../utils/connectFunction';
+import action from './../../utils/actions';
 
 import './landingPage.sass';
 
@@ -28,6 +30,10 @@ function LandingPage(props) {
     },
   ];
 
+  useEffect(() => {
+    localStorage.setItem('login', null);
+  }, []);
+
   const handleChange = (value, label) => {
     switch (label) {
       case 'email':
@@ -45,21 +51,24 @@ function LandingPage(props) {
       email,
       password,
     };
-    localStorage.setItem('login', null);
     const loginUser = await wrapRequest({
       method: 'POST',
       url: `${API.URL[process.env.NODE_ENV]}/login`,
       mode: 'cors',
       cache: 'default',
       data: payload,
+    }).catch(e => {
+      const data = get(e, 'response.data');
+      props.dispatchErrorNotifiction('errorNotification', data);
     });
     const data = get(loginUser, 'data');
     const user_id = get(loginUser, 'data.user_id');
     if (data) {
       localStorage.setItem('login', JSON.stringify(data));
       props.history.push(`/user/${user_id}`);
-    } else {
-      console.log('Something went wrong...with login');
+      props.dispatchSuccessNotifiction('successNotification', {
+        message: data.message,
+      });
     }
   };
 
@@ -112,4 +121,19 @@ function LandingPage(props) {
   );
 }
 
-export default withRouter(LandingPage);
+const mapStateToProps = state => {
+  return { store: state };
+};
+
+const mapDispatchToProps = dispatch => {
+  const actionData = (name, payload) => dispatch(action(name, payload));
+  return {
+    dispatchErrorNotifiction: actionData,
+    dispatchSuccessNotifiction: actionData,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(LandingPage));

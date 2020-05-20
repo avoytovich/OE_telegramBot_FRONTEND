@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Link, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
@@ -23,25 +23,36 @@ function Head(props) {
     },
   };
 
-  const handleLogOut = () => localStorage.removeItem('login');
+  const handleLogOut = () => localStorage.setItem('login', null);
 
   const resolveLink = () => (checkAuth() ? links.signUp : links.logOut);
-  const { title, route } = resolveLink();
 
   const history = get(props, 'history');
+
+  const [title, setTitle] = useState('Sign Up');
+  const [route, setRoute] = useState('/bookmark/sign-up');
+  const [login, setLogin] = useState(
+    get(JSON.parse(localStorage.getItem('login')), 'token')
+  );
+
+  useEffect(() => {
+    if (login) {
+      const { title, route } = resolveLink();
+      setTitle(title);
+      setRoute(route);
+    }
+  });
 
   const resolveOnClickLink = () => {
     switch (title) {
       case 'Log Out':
         handleLogOut();
-        history.push(route);
         break;
       case 'Sign Up':
         history.push(route);
         break;
       default:
         handleLogOut();
-        history.push(route);
     }
   };
 
