@@ -100,7 +100,7 @@ function LandingPage(props) {
                       />
                     ))}
                     <Button type="submit" variant="contained" color="primary">
-                      Log In
+                      Log In / Sign Up
                     </Button>
                   </form>
                 </div>
