@@ -11,6 +11,7 @@ import {
   SubGroup,
   Bookmark,
   LandingPage,
+  AdminPanel,
   Test,
 } from './components';
 import Notification from './components/shared/Notification';
@@ -45,6 +46,12 @@ function App(props) {
             path="/user/:id/group/:group"
             render={() =>
               checkAuth() ? <Redirect to="/bookmark" /> : <Group />
+            }
+          />
+          <Route
+            path="/user/:id/admin"
+            render={() =>
+              checkAuth() ? <Redirect to="/bookmark" /> : <AdminPanel />
             }
           />
           <Route

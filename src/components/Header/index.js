@@ -1,9 +1,12 @@
 import React from 'react';
-import { Grid, Link, Typography } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+import { Grid, Typography } from '@material-ui/core';
+import { withRouter, Link } from 'react-router-dom';
+import { get } from 'lodash';
 
 import checkAuth from './../../helper/redirections';
 import SVG from './../../helper/customizeIcon';
+import connect from './../../utils/connectFunction';
+import action from './../../utils/actions';
 
 import imageLogo from './../../assets/images/logo.svg';
 import imageAvatar from './../../assets/images/avatar.svg';
@@ -11,19 +14,29 @@ import imageAvatar from './../../assets/images/avatar.svg';
 import './header.sass';
 
 function Head(props) {
-  const logOut = {
-    title: 'Log Out',
-    route: '/bookmark',
+  const user_id = get(props, 'match.params.id');
+
+  const links = {
+    logOut: {
+      title: 'Log Out',
+      route: '/bookmark',
+    },
+    admin: {
+      title: 'Admin Panel',
+      route: `/user/${user_id}/admin`,
+    },
   };
 
   const handleLogOut = () => localStorage.setItem('login', null);
 
-  //console.log('props Header', props);
+  const isAdmin = get(props, 'store.isAdmin');
+
+  // console.log('props Header', props);
   return (
     <div className="wrapper-header">
       <Grid container spacing={0} justify="center">
         <Grid item xs={10} sm={10} className="container-header">
-          <Grid item xs={10} sm={10} className="container-info">
+          <Grid item xs={8} sm={8} className="container-info">
             <Grid item xs={2} sm={2} className="container-info-logo">
               <SVG
                 className="info-logo"
@@ -37,7 +50,7 @@ function Head(props) {
             </Grid>
           </Grid>
           {!checkAuth() && (
-            <Grid item xs={2} sm={2} className="container-link">
+            <Grid item xs={4} sm={4} className="container-link">
               <SVG
                 className="link-avatar"
                 width="48px"
@@ -45,13 +58,26 @@ function Head(props) {
                 source={imageAvatar}
               />
               <Link
-                href={logOut.route}
+                to={links.logOut.route}
                 className="link-auth"
                 onClick={handleLogOut}
                 style={{ color: '#470b2f' }}
               >
-                <Typography className="link-title">{logOut.title}</Typography>
+                <Typography className="link-title">
+                  {links.logOut.title}
+                </Typography>
               </Link>
+              {isAdmin && (
+                <Link
+                  to={links.admin.route}
+                  className="link-admin"
+                  style={{ color: '#470b2f' }}
+                >
+                  <Typography className="link-title">
+                    {links.admin.title}
+                  </Typography>
+                </Link>
+              )}
             </Grid>
           )}
         </Grid>
@@ -60,4 +86,18 @@ function Head(props) {
   );
 }
 
-export default withRouter(Head);
+const mapStateToProps = state => {
+  return { store: state };
+};
+
+const mapDispatchToProps = dispatch => {
+  const actionData = (name, payload) => dispatch(action(name, payload));
+  return {
+    // dispatchSetAdmin: actionData,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(Head));

@@ -41,6 +41,21 @@ function Dashboard(props) {
     fetchGroup();
   }, [exec]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const getUser = await wrapRequest({
+        method: 'GET',
+        url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}`,
+        mode: 'cors',
+        cache: 'default',
+      });
+      const user = get(getUser, 'data.user');
+      user &&
+        props.dispatchSetAdmin('setAdmin', user.email == 'levanwork@ukr.net');
+    };
+    fetchUser();
+  }, []);
+
   const groups = get(props, 'store.groups');
 
   const columns = [
@@ -180,6 +195,7 @@ const mapDispatchToProps = dispatch => {
   const actionData = (name, payload) => dispatch(action(name, payload));
   return {
     dispatchFetchGroup: actionData,
+    dispatchSetAdmin: actionData,
     dispatchErrorNotifiction: actionData,
     dispatchSuccessNotifiction: actionData,
   };
