@@ -1,5 +1,9 @@
 const generalReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_ADMIN':
+      const changedStateSetAdmin = { ...state };
+      changedStateSetAdmin.isAdmin = action.payload;
+      return changedStateSetAdmin;
     case 'FETCH_GROUP':
       const changedStateFetchGroup = { ...state };
       changedStateFetchGroup.groups = action.payload;

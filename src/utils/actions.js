@@ -1,5 +1,10 @@
 export default (name, payload) => {
   switch (name) {
+    case 'setAdmin':
+      return {
+        type: 'SET_ADMIN',
+        payload,
+      };
     case 'fetchGroup':
       return {
         type: 'FETCH_GROUP',
