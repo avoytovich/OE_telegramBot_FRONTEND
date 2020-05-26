@@ -70,12 +70,22 @@ function AdminPage(props) {
             <Button
               type="primary"
               style={{
-                border: 'red',
-                backgroundColor: 'red',
+                border: 'orange',
+                backgroundColor: 'orange',
               }}
               onClick={() => sendDeclineUserRequest(text.id)}
             >
               Decline
+            </Button>
+            <Button
+              type="primary"
+              style={{
+                border: 'red',
+                backgroundColor: 'red',
+              }}
+              onClick={() => sendDeleteUserRequest(text.id)}
+            >
+              Delete
             </Button>
           </Space>
         );
@@ -128,6 +138,24 @@ function AdminPage(props) {
         method: 'POST',
         url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_deactivate`,
         data: { id: declineUser_id },
+        mode: 'cors',
+        cache: 'default',
+      })
+        .then(data => [200, 201].includes(data.status) && setExec(!exec))
+        .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
+      setIsSending(false);
+    },
+    [exec]
+  );
+
+  const sendDeleteUserRequest = useCallback(
+    async deleteUser_id => {
+      if (isSending) return;
+      setIsSending(true);
+      await wrapRequest({
+        method: 'DELETE',
+        url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_delete`,
+        data: { id: deleteUser_id },
         mode: 'cors',
         cache: 'default',
       })
