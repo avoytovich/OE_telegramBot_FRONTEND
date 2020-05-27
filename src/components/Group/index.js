@@ -24,6 +24,7 @@ function Group(props) {
   const [close, setClose] = useState(true);
   const [newSubGroup, setNewSubGroup] = useState('');
   const [delSubGroups, setDelSubGroups] = useState([]);
+  const [isSubGroups, setIsSubGroups] = useState(false);
 
   const user_id = get(props, 'match.params.id');
   const group_id = get(props, 'match.params.group');
@@ -41,6 +42,7 @@ function Group(props) {
       });
       const listSubGroups = get(getSubGroup, 'data.subGroups');
       props.dispatchFetchSubGroup('fetchSubGroup', listSubGroups);
+      setIsSubGroups(true);
     };
     fetchSubGroup();
   }, [exec]);
@@ -140,18 +142,18 @@ function Group(props) {
             <Head />
             <Grid container spacing={8} justify="center">
               <Grid item xs={4} sm={4}>
-                <div className="group-subgroup">
-                  <div className="group-nav">
-                    <Link to={`/user/${user_id}`}>
-                      <LeftOutlined />
-                      Back
-                    </Link>
-                    <Typography className="group-title">
-                      {resolveTitle()}
-                    </Typography>
-                  </div>
-                  <div className="subgroup-links">
-                    {data && (
+                {isSubGroups && (
+                  <div className="group-subgroup">
+                    <div className="group-nav">
+                      <Link to={`/user/${user_id}`}>
+                        <LeftOutlined />
+                        Back
+                      </Link>
+                      <Typography className="group-title">
+                        {resolveTitle()}
+                      </Typography>
+                    </div>
+                    <div className="subgroup-links">
                       <Table
                         rowSelection={{
                           type: 'checkbox',
@@ -160,32 +162,32 @@ function Group(props) {
                         columns={columns}
                         dataSource={data}
                       />
-                    )}
+                    </div>
+                    <div className="group-nav">
+                      <Button
+                        type="primary"
+                        style={{
+                          border: 'red',
+                          backgroundColor: 'red',
+                        }}
+                        onClick={sendDeleteSubGroupRequest}
+                      >
+                        Delete
+                      </Button>
+                      <Popover title="Add" color="green">
+                        {handleClose => (
+                          <Add_SubGroup
+                            handleChangeAddSubGroup={handleChangeAddSubGroup}
+                            sendAddSubGroupRequest={sendAddSubGroupRequest}
+                            close={close}
+                            setClose={setClose}
+                            handleClose={handleClose}
+                          />
+                        )}
+                      </Popover>
+                    </div>
                   </div>
-                  <div className="group-nav">
-                    <Button
-                      type="primary"
-                      style={{
-                        border: 'red',
-                        backgroundColor: 'red',
-                      }}
-                      onClick={sendDeleteSubGroupRequest}
-                    >
-                      Delete
-                    </Button>
-                    <Popover title="Add" color="green">
-                      {handleClose => (
-                        <Add_SubGroup
-                          handleChangeAddSubGroup={handleChangeAddSubGroup}
-                          sendAddSubGroupRequest={sendAddSubGroupRequest}
-                          close={close}
-                          setClose={setClose}
-                          handleClose={handleClose}
-                        />
-                      )}
-                    </Popover>
-                  </div>
-                </div>
+                )}
               </Grid>
               <Grid item xs={8} sm={8}>
                 <Search />

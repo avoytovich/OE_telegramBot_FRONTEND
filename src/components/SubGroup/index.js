@@ -33,6 +33,7 @@ function SubGroup(props) {
   const group_id = get(props, 'match.params.group');
   const subGroup_id = get(props, 'match.params.subgroup');
   const subGroups = get(props, 'store.subGroups');
+  const [isBookmarks, setIsBookmarks] = useState(false);
 
   useEffect(() => {
     const fetchBookmarks = async () => {
@@ -46,6 +47,7 @@ function SubGroup(props) {
       });
       const listBookmarks = get(getBookmarks, 'data.bookmarks');
       props.dispatchFetchBookmarks('fetchBookmark', listBookmarks);
+      setIsBookmarks(true);
     };
     fetchBookmarks();
   }, [exec]);
@@ -152,18 +154,18 @@ function SubGroup(props) {
             <Head />
             <Grid container spacing={8} justify="center">
               <Grid item xs={4} sm={4}>
-                <div className="subgroup-bookmark">
-                  <div className="subgroup-nav">
-                    <Link to={`/user/${user_id}/group/${group_id}`}>
-                      <LeftOutlined />
-                      Back
-                    </Link>
-                    <Typography className="subgroup-title">
-                      {resolveTitle()}
-                    </Typography>
-                  </div>
-                  <div className="bookmark-links">
-                    {data && (
+                {isBookmarks && (
+                  <div className="subgroup-bookmark">
+                    <div className="subgroup-nav">
+                      <Link to={`/user/${user_id}/group/${group_id}`}>
+                        <LeftOutlined />
+                        Back
+                      </Link>
+                      <Typography className="subgroup-title">
+                        {resolveTitle()}
+                      </Typography>
+                    </div>
+                    <div className="bookmark-links">
                       <Table
                         rowSelection={{
                           type: 'checkbox',
@@ -172,40 +174,40 @@ function SubGroup(props) {
                         columns={columns}
                         dataSource={data}
                       />
-                    )}
+                    </div>
+                    <div className="subgroup-nav">
+                      <Button
+                        type="primary"
+                        style={{
+                          border: 'red',
+                          backgroundColor: 'red',
+                        }}
+                        onClick={sendDeleteBookmarkRequest}
+                      >
+                        Delete
+                      </Button>
+                      <Popover title="Add" color="green">
+                        {handleClose => (
+                          <Add_Bookmark
+                            handleChangeAddBookmarkTitle={
+                              handleChangeAddBookmarkTitle
+                            }
+                            handleChangeAddBookmarkLink={
+                              handleChangeAddBookmarkLink
+                            }
+                            handleChangeAddBookmarkSearchWords={
+                              handleChangeAddBookmarkSearchWords
+                            }
+                            sendAddBookmarkRequest={sendAddBookmarkRequest}
+                            close={close}
+                            setClose={setClose}
+                            handleClose={handleClose}
+                          />
+                        )}
+                      </Popover>
+                    </div>
                   </div>
-                  <div className="subgroup-nav">
-                    <Button
-                      type="primary"
-                      style={{
-                        border: 'red',
-                        backgroundColor: 'red',
-                      }}
-                      onClick={sendDeleteBookmarkRequest}
-                    >
-                      Delete
-                    </Button>
-                    <Popover title="Add" color="green">
-                      {handleClose => (
-                        <Add_Bookmark
-                          handleChangeAddBookmarkTitle={
-                            handleChangeAddBookmarkTitle
-                          }
-                          handleChangeAddBookmarkLink={
-                            handleChangeAddBookmarkLink
-                          }
-                          handleChangeAddBookmarkSearchWords={
-                            handleChangeAddBookmarkSearchWords
-                          }
-                          sendAddBookmarkRequest={sendAddBookmarkRequest}
-                          close={close}
-                          setClose={setClose}
-                          handleClose={handleClose}
-                        />
-                      )}
-                    </Popover>
-                  </div>
-                </div>
+                )}
               </Grid>
               <Grid item xs={8} sm={8}>
                 <Search />
