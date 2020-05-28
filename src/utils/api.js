@@ -1,6 +1,7 @@
 import axios from 'axios';
 import get from 'lodash/get';
 
+import history from './../helper/history';
 import { API } from './../helper/constants';
 
 let isExec = false;
@@ -48,10 +49,11 @@ const flowRefreshToken = token => {
     isExec = true;
     if (token) {
       if (!isInterval) {
-        setInterval(
-          () => execRefreshToken(),
-          getExpirationDate(token) - Date.now() - 10000
-        );
+        let int = getExpirationDate(token) - Date.now() - 10000;
+        if (int < 0) {
+          return history.push(`/bookmark`);
+        }
+        setInterval(() => execRefreshToken(), int);
       }
     } else {
       setTimeout(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { Table, Space, Button } from 'antd';
@@ -112,59 +112,50 @@ function AdminPage(props) {
     }),
   };
 
-  const sendAcceptUserRequest = useCallback(
-    async activateUser_id => {
-      if (isSending) return;
-      setIsSending(true);
-      await wrapRequest({
-        method: 'POST',
-        url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_activate`,
-        data: { id: activateUser_id },
-        mode: 'cors',
-        cache: 'default',
-      })
-        .then(data => [200, 201].includes(data.status) && setExec(!exec))
-        .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
-      setIsSending(false);
-    },
-    [exec]
-  );
+  const sendAcceptUserRequest = async activateUser_id => {
+    if (isSending) return;
+    setIsSending(true);
+    await wrapRequest({
+      method: 'POST',
+      url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_activate`,
+      data: { id: activateUser_id },
+      mode: 'cors',
+      cache: 'default',
+    })
+      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
+    setIsSending(false);
+  };
 
-  const sendDeclineUserRequest = useCallback(
-    async declineUser_id => {
-      if (isSending) return;
-      setIsSending(true);
-      await wrapRequest({
-        method: 'POST',
-        url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_deactivate`,
-        data: { id: declineUser_id },
-        mode: 'cors',
-        cache: 'default',
-      })
-        .then(data => [200, 201].includes(data.status) && setExec(!exec))
-        .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
-      setIsSending(false);
-    },
-    [exec]
-  );
+  const sendDeclineUserRequest = async declineUser_id => {
+    if (isSending) return;
+    setIsSending(true);
+    await wrapRequest({
+      method: 'POST',
+      url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_deactivate`,
+      data: { id: declineUser_id },
+      mode: 'cors',
+      cache: 'default',
+    })
+      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
+    setIsSending(false);
+  };
 
-  const sendDeleteUserRequest = useCallback(
-    async deleteUser_id => {
-      if (isSending) return;
-      setIsSending(true);
-      await wrapRequest({
-        method: 'DELETE',
-        url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_delete`,
-        data: { id: deleteUser_id },
-        mode: 'cors',
-        cache: 'default',
-      })
-        .then(data => [200, 201].includes(data.status) && setExec(!exec))
-        .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
-      setIsSending(false);
-    },
-    [exec]
-  );
+  const sendDeleteUserRequest = async deleteUser_id => {
+    if (isSending) return;
+    setIsSending(true);
+    await wrapRequest({
+      method: 'DELETE',
+      url: `${API.URL[process.env.NODE_ENV]}/user/${user_id}/user_delete`,
+      data: { id: deleteUser_id },
+      mode: 'cors',
+      cache: 'default',
+    })
+      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
+    setIsSending(false);
+  };
 
   // console.log('usersList', usersList);
   return (
