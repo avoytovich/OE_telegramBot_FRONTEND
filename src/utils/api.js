@@ -5,7 +5,27 @@ import history from './../helper/history';
 import { API } from './../helper/constants';
 
 let isExec = false;
-let isInterval = false;
+
+const setExecRefreshToken = () => {
+  if (!isExec) {
+    isExec = true;
+    setTimeout(() => {
+      const getExpirationDate = jwtToken => {
+        if (!jwtToken) {
+          return null;
+        }
+        const jwt = JSON.parse(atob(jwtToken.split('.')[1]));
+        return (jwt && jwt.exp && jwt.exp * 1000) || null;
+      };
+      const token = get(JSON.parse(localStorage.getItem('login')), 'token');
+      if (!token) return;
+      setInterval(
+        () => execRefreshToken(),
+        getExpirationDate(token) - Date.now() - 10000
+      );
+    }, 5000);
+  }
+};
 
 const execRefreshToken = () => {
   const refreshToken = get(
@@ -32,46 +52,12 @@ const execRefreshToken = () => {
           token: data.data.token,
         })
       );
-      isExec = false;
     })
     .catch(checkError);
 };
 
-const flowRefreshToken = token => {
-  const getExpirationDate = jwtToken => {
-    if (!jwtToken) {
-      return null;
-    }
-    const jwt = JSON.parse(atob(jwtToken.split('.')[1]));
-    return (jwt && jwt.exp && jwt.exp * 1000) || null;
-  };
-  if (!isExec) {
-    isExec = true;
-    if (token) {
-      if (!isInterval) {
-        let int = getExpirationDate(token) - Date.now() - 10000;
-        if (int < 0) {
-          return history.push(`/bookmark`);
-        }
-        setInterval(() => execRefreshToken(), int);
-      }
-    } else {
-      setTimeout(() => {
-        token = get(JSON.parse(localStorage.getItem('login')), 'token');
-        if (!token) return;
-        setInterval(
-          () => execRefreshToken(),
-          getExpirationDate(token) - Date.now() - 10000
-        );
-        isInterval = true;
-      }, 5000);
-    }
-  }
-};
-
 export const getAuthHeaders = () => {
   let token = get(JSON.parse(localStorage.getItem('login')), 'token');
-  flowRefreshToken(token);
   const accessCors = { 'Access-Control-Allow-Origin': '*' };
   return (
     (token && { 'x-access-token': token, ...accessCors }) || { ...accessCors }
@@ -91,9 +77,11 @@ export const checkError = error => {
   return Promise.reject(error);
 };
 
-export const wrapRequest = options =>
-  axios({
+export const wrapRequest = options => {
+  setExecRefreshToken();
+  return axios({
     headers: getDefHeaders(),
     ...options,
     url: options.url,
   }).catch(checkError);
+};
