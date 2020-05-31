@@ -1,4 +1,4 @@
-export default (name, payload) => {
+export default (name, payload, id) => {
   switch (name) {
     case 'setAdmin':
       return {
@@ -13,11 +13,13 @@ export default (name, payload) => {
     case 'fetchSubGroup':
       return {
         type: 'FETCH_SUBGROUP',
+        group_id: id,
         payload,
       };
     case 'fetchBookmark':
       return {
         type: 'FETCH_BOOKMARK',
+        subGroup_id: id,
         payload,
       };
     case 'searchBookmark':

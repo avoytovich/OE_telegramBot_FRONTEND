@@ -18,8 +18,8 @@ function Bookmark(props) {
   const subGroup_id = get(props, 'match.params.subgroup');
   const bookmark_id = get(props, 'match.params.bookmark');
   const groups = get(props, 'store.groups');
-  const subGroups = get(props, 'store.subGroups');
-  const bookmarks = get(props, 'store.bookmarks');
+  const subGroups = get(props, `store.subGroups.${group_id}`);
+  const bookmarks = get(props, `store.bookmarks.${subGroup_id}`);
 
   useEffect(() => {
     props.dispatchErrorNotifiction('errorNotification', { message: 'hayu' });

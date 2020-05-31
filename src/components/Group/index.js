@@ -20,7 +20,7 @@ function Group(props) {
   // console.log('Group props', props);
 
   const [isSending, setIsSending] = useState(false);
-  const [exec, setExec] = useState(false);
+  const [execFetch, setExecFetch] = useState(false);
   const [close, setClose] = useState(true);
   const [newSubGroup, setNewSubGroup] = useState('');
   const [delSubGroups, setDelSubGroups] = useState([]);
@@ -41,13 +41,23 @@ function Group(props) {
         cache: 'default',
       });
       const listSubGroups = get(getSubGroup, 'data.subGroups');
-      props.dispatchFetchSubGroup('fetchSubGroup', listSubGroups);
+      props.dispatchFetchSubGroup('fetchSubGroup', listSubGroups, group_id);
       setIsSubGroups(true);
     };
-    fetchSubGroup();
-  }, [exec]);
+    const subgroup = get(
+      JSON.parse(localStorage.getItem('state')),
+      `subGroups.${group_id}`
+    );
+    if (!subgroup || execFetch) {
+      fetchSubGroup();
+      setExecFetch(false);
+    } else {
+      props.dispatchFetchSubGroup('fetchSubGroup', subgroup, group_id);
+    }
+    setIsSubGroups(true);
+  }, [execFetch]);
 
-  const subGroups = get(props, 'store.subGroups');
+  const subGroups = get(props, `store.subGroups.${group_id}`);
 
   const columns = [
     {
@@ -104,7 +114,7 @@ function Group(props) {
     })
       .then(data => {
         if ([200, 201].includes(data.status)) {
-          setExec(!exec);
+          setExecFetch(true);
           setClose(false);
           props.dispatchSuccessNotifiction('successNotification', {
             message: data.data.message,
@@ -113,7 +123,7 @@ function Group(props) {
       })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [newSubGroup, exec]);
+  }, [newSubGroup]);
 
   const handleChangeAddSubGroup = value => setNewSubGroup(value);
 
@@ -129,10 +139,10 @@ function Group(props) {
       mode: 'cors',
       cache: 'default',
     })
-      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .then(data => [200, 201].includes(data.status) && setExecFetch(true))
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [delSubGroups, exec]);
+  }, [delSubGroups]);
 
   return (
     <div className="wrapper-group">
@@ -206,7 +216,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const actionData = (name, payload) => dispatch(action(name, payload));
+  const actionData = (name, payload, id) => dispatch(action(name, payload, id));
   return {
     dispatchFetchSubGroup: actionData,
     dispatchErrorNotifiction: actionData,

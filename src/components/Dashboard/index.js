@@ -20,7 +20,7 @@ function Dashboard(props) {
   // console.log('Dashboard props', props);
 
   const [isSending, setIsSending] = useState(false);
-  const [exec, setExec] = useState(false);
+  const [execFetch, setExecFetch] = useState(false);
   const [close, setClose] = useState(true);
   const [newGroup, setNewGroup] = useState('');
   const [delGroups, setDelGroups] = useState([]);
@@ -38,8 +38,14 @@ function Dashboard(props) {
       const listGroups = get(getGroup, 'data.groups');
       props.dispatchFetchGroup('fetchGroup', listGroups);
     };
-    fetchGroup();
-  }, [exec]);
+    const group = get(JSON.parse(localStorage.getItem('state')), 'groups');
+    if (!group || execFetch) {
+      fetchGroup();
+      setExecFetch(false);
+    } else {
+      props.dispatchFetchGroup('fetchGroup', group);
+    }
+  }, [execFetch]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -53,7 +59,10 @@ function Dashboard(props) {
       user &&
         props.dispatchSetAdmin('setAdmin', user.email == 'levanwork@ukr.net');
     };
-    fetchUser();
+    const admin = get(JSON.parse(localStorage.getItem('state')), 'isAdmin');
+    if (!admin) {
+      fetchUser();
+    }
   }, []);
 
   const groups = get(props, 'store.groups');
@@ -102,7 +111,7 @@ function Dashboard(props) {
     })
       .then(data => {
         if ([200, 201].includes(data.status)) {
-          setExec(!exec);
+          setExecFetch(true);
           setClose(false);
           props.dispatchSuccessNotifiction('successNotification', {
             message: data.data.message,
@@ -111,7 +120,7 @@ function Dashboard(props) {
       })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [newGroup, exec]);
+  }, [newGroup]);
 
   const handleChangeAddGroup = value => setNewGroup(value);
 
@@ -125,10 +134,10 @@ function Dashboard(props) {
       mode: 'cors',
       cache: 'default',
     })
-      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .then(data => [200, 201].includes(data.status) && setExecFetch(true))
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [delGroups, exec]);
+  }, [delGroups]);
 
   return (
     <div className="wrapper-dashboard">

@@ -5,17 +5,20 @@ const generalReducer = (state, action) => {
       changedStateSetAdmin.isAdmin = action.payload;
       return changedStateSetAdmin;
     case 'FETCH_GROUP':
-      const changedStateFetchGroup = { ...state };
-      changedStateFetchGroup.groups = action.payload;
-      return changedStateFetchGroup;
+      return {
+        ...state,
+        groups: action.payload,
+      };
     case 'FETCH_SUBGROUP':
-      const changedStateFetchSubGroup = { ...state };
-      changedStateFetchSubGroup.subGroups = action.payload;
-      return changedStateFetchSubGroup;
+      return {
+        ...state,
+        subGroups: { ...state.subGroups, [action.group_id]: action.payload },
+      };
     case 'FETCH_BOOKMARK':
-      const changedStateFetchBookmark = { ...state };
-      changedStateFetchBookmark.bookmarks = action.payload;
-      return changedStateFetchBookmark;
+      return {
+        ...state,
+        bookmarks: { ...state.bookmarks, [action.subGroup_id]: action.payload },
+      };
     case 'SEARCH_BOOKMARK':
       const changedStateSearchBookmark = { ...state };
       changedStateSearchBookmark.searchBookmark = action.payload;

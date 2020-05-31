@@ -76,7 +76,9 @@ function Search(props) {
 
   const resolveLink = (subGroup_id, bookmark_id) => {
     const { searchSubGroup } = props.store;
-    const subGroup = searchSubGroup.filter(each => each.id == subGroup_id);
+    const subGroup = searchSubGroup.filter(
+      each => each && each.id == subGroup_id
+    );
     const group_id = get(subGroup, '[0].GroupOfBookmarksId');
     return `/user/${user_id}/group/${group_id}/subgroup/${subGroup_id}/bookmark/${bookmark_id}`;
   };
