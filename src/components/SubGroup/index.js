@@ -20,7 +20,7 @@ function SubGroup(props) {
   // console.log('SubGroup props', props);
 
   const [isSending, setIsSending] = useState(false);
-  const [exec, setExec] = useState(false);
+  const [execFetch, setExecFetch] = useState(false);
   const [close, setClose] = useState(true);
   const [newBookmark, setNewBookmark] = useState({
     title: '',
@@ -32,7 +32,7 @@ function SubGroup(props) {
   const user_id = get(props, 'match.params.id');
   const group_id = get(props, 'match.params.group');
   const subGroup_id = get(props, 'match.params.subgroup');
-  const subGroups = get(props, 'store.subGroups');
+  const subGroups = get(props, `store.subGroups.${group_id}`);
   const [isBookmarks, setIsBookmarks] = useState(false);
 
   useEffect(() => {
@@ -46,13 +46,23 @@ function SubGroup(props) {
         cache: 'default',
       });
       const listBookmarks = get(getBookmarks, 'data.bookmarks');
-      props.dispatchFetchBookmarks('fetchBookmark', listBookmarks);
+      props.dispatchFetchBookmarks('fetchBookmark', listBookmarks, subGroup_id);
       setIsBookmarks(true);
     };
-    fetchBookmarks();
-  }, [exec]);
+    const bookmark = get(
+      JSON.parse(localStorage.getItem('state')),
+      `bookmarks.${subGroup_id}`
+    );
+    if (!bookmark || execFetch) {
+      fetchBookmarks();
+      setExecFetch(false);
+    } else {
+      props.dispatchFetchBookmarks('fetchBookmark', bookmark, subGroup_id);
+    }
+    setIsBookmarks(true);
+  }, [execFetch]);
 
-  const bookmarks = get(props, 'store.bookmarks');
+  const bookmarks = get(props, `store.bookmarks.${subGroup_id}`);
 
   const columns = [
     {
@@ -111,7 +121,7 @@ function SubGroup(props) {
     })
       .then(data => {
         if ([200, 201].includes(data.status)) {
-          setExec(!exec);
+          setExecFetch(true);
           setClose(false);
           props.dispatchSuccessNotifiction('successNotification', {
             message: data.data.message,
@@ -120,7 +130,7 @@ function SubGroup(props) {
       })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [newBookmark, exec]);
+  }, [newBookmark]);
 
   const handleChangeAddBookmarkTitle = value =>
     setNewBookmark({ ...newBookmark, title: value });
@@ -141,10 +151,10 @@ function SubGroup(props) {
       mode: 'cors',
       cache: 'default',
     })
-      .then(data => [200, 201].includes(data.status) && setExec(!exec))
+      .then(data => [200, 201].includes(data.status) && setExecFetch(true))
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
-  }, [delBookmarks, exec]);
+  }, [delBookmarks]);
 
   return (
     <div className="wrapper-subgroup">
@@ -226,7 +236,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const actionData = (name, payload) => dispatch(action(name, payload));
+  const actionData = (name, payload, id) => dispatch(action(name, payload, id));
   return {
     dispatchFetchBookmarks: actionData,
     dispatchErrorNotifiction: actionData,

@@ -32,6 +32,7 @@ function LandingPage(props) {
 
   useEffect(() => {
     localStorage.setItem('login', null);
+    localStorage.setItem('state', null);
   }, []);
 
   const handleChange = (value, label) => {

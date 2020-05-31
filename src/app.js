@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
+import createPersistedReducer from 'use-persisted-reducer';
 import LogRocket from 'logrocket';
 
 import history from './helper/history';
@@ -21,7 +22,8 @@ require('./assets/images/favicon.ico');
 LogRocket.init('6vridg/test');
 
 function App(props) {
-  const [store, dispatch] = useReducer(generalReducer, {});
+  const usePersistedReducer = createPersistedReducer('state');
+  const [store, dispatch] = usePersistedReducer(generalReducer, {});
 
   useEffect(() => {}, []);
 

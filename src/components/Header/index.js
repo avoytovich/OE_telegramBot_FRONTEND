@@ -27,7 +27,10 @@ function Head(props) {
     },
   };
 
-  const handleLogOut = () => localStorage.setItem('login', null);
+  const handleLogOut = () => {
+    localStorage.setItem('login', null);
+    localStorage.setItem('state', null);
+  };
 
   const isAdmin = get(props, 'store.isAdmin');
 
