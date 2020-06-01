@@ -27,10 +27,7 @@ function Head(props) {
     },
   };
 
-  const handleLogOut = () => {
-    localStorage.setItem('login', null);
-    localStorage.setItem('state', null);
-  };
+  const handleLogOut = () => props.dispatchLogOut('logOut');
 
   const isAdmin = get(props, 'store.isAdmin');
 
@@ -94,9 +91,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  const actionData = (name, payload) => dispatch(action(name, payload));
+  const actionData = name => dispatch(action(name));
   return {
-    // dispatchSetAdmin: actionData,
+    dispatchLogOut: actionData,
   };
 };
 
