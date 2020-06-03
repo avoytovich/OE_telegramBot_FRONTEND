@@ -59,8 +59,7 @@ function Dashboard(props) {
       user &&
         props.dispatchSetAdmin('setAdmin', user.email == 'levanwork@ukr.net');
     };
-    const userId = get(JSON.parse(localStorage.getItem('login')), 'user_id');
-    if (!userId) {
+    if (!props.store.hasOwnProperty('isAdmin')) {
       fetchUser();
     }
   }, []);
