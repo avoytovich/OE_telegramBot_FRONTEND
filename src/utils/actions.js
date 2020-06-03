@@ -47,6 +47,10 @@ export default (name, payload, id) => {
         type: 'SUCCESS_NOTIFICATION',
         payload,
       };
+    case 'logOut':
+      return {
+        type: 'LOG_OUT',
+      };
   }
 };
 

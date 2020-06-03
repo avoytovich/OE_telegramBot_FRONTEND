@@ -59,8 +59,8 @@ function Dashboard(props) {
       user &&
         props.dispatchSetAdmin('setAdmin', user.email == 'levanwork@ukr.net');
     };
-    const admin = get(JSON.parse(localStorage.getItem('state')), 'isAdmin');
-    if (!admin) {
+    const userId = get(JSON.parse(localStorage.getItem('login')), 'user_id');
+    if (!userId) {
       fetchUser();
     }
   }, []);
@@ -157,6 +157,7 @@ function Dashboard(props) {
                         }}
                         columns={columns}
                         dataSource={data}
+                        pagination={{ pageSize: 5 }}
                       />
                     )}
                   </div>

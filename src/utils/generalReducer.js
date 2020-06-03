@@ -53,6 +53,8 @@ const generalReducer = (state, action) => {
       const changedStateSuccessNotification = { ...state };
       changedStateSuccessNotification.successNotification = action.payload;
       return changedStateSuccessNotification;
+    case 'LOG_OUT':
+      return {};
     default:
       return state;
   }
