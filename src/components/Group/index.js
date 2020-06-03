@@ -171,6 +171,7 @@ function Group(props) {
                         }}
                         columns={columns}
                         dataSource={data}
+                        pagination={{ pageSize: 5 }}
                       />
                     </div>
                     <div className="group-nav">

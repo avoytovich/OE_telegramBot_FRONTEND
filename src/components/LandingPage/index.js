@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+import { LoginOutlined } from '@ant-design/icons';
+import { withRouter, Link } from 'react-router-dom';
+import axios from 'axios';
 import { get } from 'lodash';
 
 import { Head } from './../../components';
 import { API } from '../../helper/constants';
-import { wrapRequest } from '../../utils/api';
 import connect from './../../utils/connectFunction';
 import action from './../../utils/actions';
 
@@ -16,6 +17,8 @@ function LandingPage(props) {
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const userId = get(JSON.parse(localStorage.getItem('login')), 'user_id');
 
   const inputFields = [
     {
@@ -52,7 +55,8 @@ function LandingPage(props) {
       email,
       password,
     };
-    const loginUser = await wrapRequest({
+    const loginUser = await axios({
+      headers: { 'Content-Type': 'application/json' },
       method: 'POST',
       url: `${API.URL[process.env.NODE_ENV]}/login`,
       mode: 'cors',
@@ -82,28 +86,47 @@ function LandingPage(props) {
             <Grid container spacing={0} justify="center">
               <Grid item xs={6} sm={6}>
                 <div className="landing-login">
-                  <form onSubmit={handleSubmit}>
-                    {inputFields.map((each, id) => (
-                      <TextField
-                        key={id}
-                        id={each.label}
-                        name={each.label}
-                        label={each.label.toUpperCase()}
-                        placeholder={each.placeholder}
-                        inputProps={{
-                          type: each.type,
-                        }}
-                        onChange={e => handleChange(e.target.value, each.label)}
-                        style={{
-                          marginBottom: '5px',
-                        }}
-                        fullWidth
-                      />
-                    ))}
-                    <Button type="submit" variant="contained" color="primary">
-                      Log In / Sign Up
-                    </Button>
-                  </form>
+                  {userId ? (
+                    <div className="landing-go">
+                      <Link to={`/user/${userId}`}>
+                        <LoginOutlined
+                          style={{ fontSize: '60px', color: 'green' }}
+                        />
+                        <Typography
+                          variant="h4"
+                          className="landing-go-title"
+                          style={{ color: 'green' }}
+                        >
+                          Go
+                        </Typography>
+                      </Link>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit}>
+                      {inputFields.map((each, id) => (
+                        <TextField
+                          key={id}
+                          id={each.label}
+                          name={each.label}
+                          label={each.label.toUpperCase()}
+                          placeholder={each.placeholder}
+                          inputProps={{
+                            type: each.type,
+                          }}
+                          onChange={e =>
+                            handleChange(e.target.value, each.label)
+                          }
+                          style={{
+                            marginBottom: '5px',
+                          }}
+                          fullWidth
+                        />
+                      ))}
+                      <Button type="submit" variant="contained" color="primary">
+                        Log In / Sign Up
+                      </Button>
+                    </form>
+                  )}
                 </div>
               </Grid>
               <Grid item xs={6} sm={6}>
