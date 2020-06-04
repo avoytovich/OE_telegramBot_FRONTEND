@@ -72,16 +72,21 @@ const getDefHeaders = () => ({
 export const checkError = error => {
   const status = get(error, 'response.status');
   if (status >= 401 && status <= 403) {
-    history.push('/reports');
+    localStorage.setItem('login', null);
+    history.push('/bookmark');
   }
   return Promise.reject(error);
 };
 
 export const wrapRequest = options => {
-  setExecRefreshToken();
   return axios({
     headers: getDefHeaders(),
     ...options,
     url: options.url,
-  }).catch(checkError);
+  })
+    .then(data => {
+      setExecRefreshToken();
+      data => [200, 201].includes(data.status) && setExecRefreshToken();
+    })
+    .catch(checkError);
 };
