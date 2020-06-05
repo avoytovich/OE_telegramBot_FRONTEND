@@ -85,8 +85,10 @@ export const wrapRequest = options => {
     url: options.url,
   })
     .then(data => {
-      setExecRefreshToken();
-      data => [200, 201].includes(data.status) && setExecRefreshToken();
+      if ([200, 201].includes(data.status)) {
+        setExecRefreshToken();
+        return data;
+      }
     })
     .catch(checkError);
 };
