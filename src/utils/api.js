@@ -4,42 +4,20 @@ import get from 'lodash/get';
 import history from './../helper/history';
 import { API } from './../helper/constants';
 
-let isExec = false;
-
-const setExecRefreshToken = () => {
-  if (!isExec) {
-    isExec = true;
-    setTimeout(() => {
-      const getExpirationDate = jwtToken => {
-        if (!jwtToken) {
-          return null;
-        }
-        const jwt = JSON.parse(atob(jwtToken.split('.')[1]));
-        return (jwt && jwt.exp && jwt.exp * 1000) || null;
-      };
-      const token = get(JSON.parse(localStorage.getItem('login')), 'token');
-      if (!token) return;
-      setInterval(
-        () => execRefreshToken(),
-        getExpirationDate(token) - Date.now() - 10000
-      );
-    }, 5000);
-  }
-};
-
-const execRefreshToken = () => {
+const execRefreshToken = async () => {
   const refreshToken = get(
     JSON.parse(localStorage.getItem('login')),
     'refreshToken'
   );
-  axios({
+  const user_id = get(JSON.parse(localStorage.getItem('login')), 'user_id');
+  await axios({
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
     url: `${API.URL[process.env.NODE_ENV]}/token`,
     mode: 'cors',
     cache: 'default',
     data: {
-      id: 1,
+      id: user_id,
       refreshToken: refreshToken,
     },
   })
@@ -84,11 +62,15 @@ export const wrapRequest = options => {
     ...options,
     url: options.url,
   })
-    .then(data => {
-      if ([200, 201].includes(data.status)) {
-        setExecRefreshToken();
-        return data;
+    .then(data => [200, 201].includes(data.status) && data)
+    .catch(error => {
+      const status = get(error, 'response.status');
+      if (status >= 401 && status <= 403) {
+        return Promise.resolve(execRefreshToken()).then(data =>
+          wrapRequest(options)
+        );
+      } else {
+        checkError(error);
       }
-    })
-    .catch(checkError);
+    });
 };
