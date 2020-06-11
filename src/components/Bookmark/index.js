@@ -2,16 +2,19 @@ import React, { useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { LeftOutlined } from '@ant-design/icons';
+import { Markup } from 'interweave';
 import { get } from 'lodash';
 
 import connect from './../../utils/connectFunction';
 import action from './../../utils/actions';
+import { wrapRequest } from './../../utils/api';
+import { API } from './../../helper/constants';
 import Head from './../Header';
 
 import './bookmark.sass';
 
 function Bookmark(props) {
-  //console.log('Bookmark props', props);
+  // console.log('Bookmark props', props);
 
   const user_id = get(props, 'match.params.id');
   const group_id = get(props, 'match.params.group');
@@ -20,9 +23,22 @@ function Bookmark(props) {
   const groups = get(props, 'store.groups');
   const subGroups = get(props, `store.subGroups.${group_id}`);
   const bookmarks = get(props, `store.bookmarks.${subGroup_id}`);
+  const article = get(props, 'store.article');
 
   useEffect(() => {
-    props.dispatchErrorNotifiction('errorNotification', { message: 'hayu' });
+    const fetchArticle = async () => {
+      const getArticle = await wrapRequest({
+        method: 'GET',
+        url: `${
+          API.URL[process.env.NODE_ENV]
+        }/user/${user_id}/article?articleParser=${resolveSrc()}`,
+        mode: 'cors',
+        cache: 'default',
+      });
+      const article = get(getArticle, 'data.article');
+      props.dispatchFetchArticle('fetchArticle', article);
+    };
+    fetchArticle();
   }, []);
 
   const resolveTitle = () => {
@@ -89,7 +105,18 @@ function Bookmark(props) {
                     </Typography>
                   </div>
                   <div className="bookmark-content">
-                    <iframe height="100%" width="100%" src={resolveSrc()} />
+                    <Typography variant="h4" className="caption">
+                      {article.title}
+                    </Typography>
+                    <Typography variant="h6">
+                      <a href={article.url} target="_blank">
+                        Original View
+                      </a>
+                    </Typography>
+                    <img alt="caption-image" src={article.image} />
+                    <Typography variant="h6">
+                      {article && <Markup content={article.content} />}
+                    </Typography>
                   </div>
                 </div>
               </Grid>
@@ -109,7 +136,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   const actionData = (name, payload) => dispatch(action(name, payload));
   return {
-    dispatchFetchGroup: actionData,
+    dispatchFetchArticle: actionData,
     dispatchErrorNotifiction: actionData,
   };
 };
