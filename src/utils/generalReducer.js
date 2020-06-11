@@ -19,6 +19,11 @@ const generalReducer = (state, action) => {
         ...state,
         bookmarks: { ...state.bookmarks, [action.subGroup_id]: action.payload },
       };
+    case 'FETCH_ARTICLE':
+      return {
+        ...state,
+        article: action.payload,
+      };
     case 'SEARCH_BOOKMARK':
       const changedStateSearchBookmark = { ...state };
       changedStateSearchBookmark.searchBookmark = action.payload;

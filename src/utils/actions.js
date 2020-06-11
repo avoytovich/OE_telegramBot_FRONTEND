@@ -22,6 +22,11 @@ export default (name, payload, id) => {
         subGroup_id: id,
         payload,
       };
+    case 'fetchArticle':
+      return {
+        type: 'FETCH_ARTICLE',
+        payload,
+      };
     case 'searchBookmark':
       return {
         type: 'SEARCH_BOOKMARK',
