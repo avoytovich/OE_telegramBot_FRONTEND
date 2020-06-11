@@ -104,20 +104,22 @@ function Bookmark(props) {
                       {resolveTitle()}
                     </Typography>
                   </div>
-                  <div className="bookmark-content">
-                    <Typography variant="h4" className="caption">
-                      {article.title}
-                    </Typography>
-                    <Typography variant="h6">
-                      <a href={article.url} target="_blank">
-                        Original View
-                      </a>
-                    </Typography>
-                    <img alt="caption-image" src={article.image} />
-                    <Typography variant="h6">
-                      {article && <Markup content={article.content} />}
-                    </Typography>
-                  </div>
+                  {article && (
+                    <div className="bookmark-content">
+                      <Typography variant="h4" className="caption">
+                        {article.title}
+                      </Typography>
+                      <Typography variant="h6">
+                        <a href={article.url} target="_blank">
+                          Original View
+                        </a>
+                      </Typography>
+                      <img alt="caption-image" src={article.image} />
+                      <Typography variant="h6">
+                        <Markup content={article.content} />
+                      </Typography>
+                    </div>
+                  )}
                 </div>
               </Grid>
             </Grid>
