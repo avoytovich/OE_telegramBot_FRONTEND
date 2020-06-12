@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { LeftOutlined } from '@ant-design/icons';
@@ -15,6 +15,7 @@ import './bookmark.sass';
 
 function Bookmark(props) {
   // console.log('Bookmark props', props);
+  const [isOriginView, setIsOriginView] = useState(false);
 
   const user_id = get(props, 'match.params.id');
   const group_id = get(props, 'match.params.group');
@@ -36,9 +37,17 @@ function Bookmark(props) {
         cache: 'default',
       });
       const article = get(getArticle, 'data.article');
+      if (!article) {
+        setIsOriginView(true);
+        window.open(resolveSrc(), '_blank');
+      }
       props.dispatchFetchArticle('fetchArticle', article);
     };
     fetchArticle();
+    return () => {
+      setIsOriginView(false);
+      props.dispatchFetchArticle('fetchArticle', null);
+    };
   }, []);
 
   const resolveTitle = () => {
@@ -119,6 +128,11 @@ function Bookmark(props) {
                         <Markup content={article.content} />
                       </Typography>
                     </div>
+                  )}
+                  {isOriginView && (
+                    <Typography variant="h5" className="announcement">
+                      This bookmark was opened in origin view
+                    </Typography>
                   )}
                 </div>
               </Grid>
