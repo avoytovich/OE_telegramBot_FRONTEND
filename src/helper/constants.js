@@ -5,7 +5,7 @@ const T = {
 const API = {
   URL: {
     development: 'http://localhost:8033',
-    production: 'https://bookmark-back-end.herokuapp.com',
+    production: 'https://oe-telegram-bot-back-end.herokuapp.com',
   },
 };
 

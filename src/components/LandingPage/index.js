@@ -132,8 +132,8 @@ function LandingPage(props) {
               <Grid item xs={6} sm={6}>
                 <div className="landing-about">
                   <Typography className="landing-about-content">
-                    Application allows efficient manage bookmarks of materials
-                    which was chosen by you
+                    Application allows efficient organize english followers in
+                    groups
                   </Typography>
                 </div>
               </Grid>

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect } from 'react';
 import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import createPersistedReducer from 'use-persisted-reducer';
 import LogRocket from 'logrocket';
@@ -6,15 +6,7 @@ import LogRocket from 'logrocket';
 import history from './helper/history';
 import Context from './helper/context';
 import generalReducer from './utils/generalReducer';
-import {
-  Dashboard,
-  Group,
-  SubGroup,
-  Bookmark,
-  LandingPage,
-  AdminPanel,
-  Test,
-} from './components';
+import { Dashboard, LandingPage, Test } from './components';
 import Notification from './components/shared/Notification';
 import checkAuth from './helper/redirections';
 require('./assets/images/favicon.ico');
@@ -33,43 +25,17 @@ function App(props) {
       <Router history={history}>
         <Switch>
           <Route
-            path="/user/:id/group/:group/subgroup/:subgroup/bookmark/:bookmark"
-            render={() =>
-              checkAuth() ? <Redirect to="/bookmark" /> : <Bookmark />
-            }
-          />
-          <Route
-            path="/user/:id/group/:group/subgroup/:subgroup"
-            render={() =>
-              checkAuth() ? <Redirect to="/bookmark" /> : <SubGroup />
-            }
-          />
-          <Route
-            path="/user/:id/group/:group"
-            render={() =>
-              checkAuth() ? <Redirect to="/bookmark" /> : <Group />
-            }
-          />
-          <Route
-            path="/user/:id/admin"
-            render={() =>
-              checkAuth() ? <Redirect to="/bookmark" /> : <AdminPanel />
-            }
-          />
-          <Route
             path="/user/:id"
             render={() =>
-              checkAuth() ? <Redirect to="/bookmark" /> : <Dashboard />
+              checkAuth() ? <Redirect to="/english" /> : <Dashboard />
             }
           />
           <Route
             path="/test"
-            render={() =>
-              checkAuth() ? <Redirect to="/bookmark" /> : <Test />
-            }
+            render={() => (checkAuth() ? <Redirect to="/english" /> : <Test />)}
           />
-          <Route path="/bookmark" component={LandingPage} />
-          <Redirect from="/" to="/bookmark" />
+          <Route path="/english" component={LandingPage} />
+          <Redirect from="/" to="/english" />
         </Switch>
       </Router>
       <Notification />

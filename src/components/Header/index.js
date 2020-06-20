@@ -8,7 +8,7 @@ import SVG from './../../helper/customizeIcon';
 import connect from './../../utils/connectFunction';
 import action from './../../utils/actions';
 
-import imageLogo from './../../assets/images/logo.svg';
+import imageLogo from './../../assets/images/logo.jpeg';
 import imageAvatar from './../../assets/images/avatar.svg';
 
 import './header.sass';
@@ -49,7 +49,7 @@ function Head(props) {
               />
             </Grid>
             <Grid item xs={10} sm={10} className="container-info-title">
-              <Typography className="info-title">Bookmark's</Typography>
+              <Typography className="info-title">LET'S TALK ENGLISH</Typography>
             </Grid>
           </Grid>
           {!checkAuth() && (

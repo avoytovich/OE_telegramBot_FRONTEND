@@ -1,16 +1,15 @@
 import React from 'react';
-import { forEach, get } from 'lodash';
+import { forEach } from 'lodash';
 
-const customizeIcon = props => {
-  
+const customizeIcon = (props) => {
   //console.log('props SvgIcons', props);
   const helper = forEach(props, (value, key) => {
     return {
       ...helper,
-      key: value
+      key: value,
     };
   });
-  const {className, source} = helper;
+  const { className, source } = helper;
 
   const resolvePath = () => `url(${source})`;
 
@@ -19,7 +18,7 @@ const customizeIcon = props => {
       className={className}
       style={{
         backgroundImage: resolvePath(),
-        ...props
+        ...props,
       }}
     >
       {props.children}

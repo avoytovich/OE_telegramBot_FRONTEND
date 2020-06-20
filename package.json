@@ -1,5 +1,5 @@
 {
-  "name": "Bookmars_FRONT",
+  "name": "english",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -22,12 +22,10 @@
     "axios": "^0.18.0",
     "express": "^4.17.1",
     "history": "^4.7.2",
-    "interweave": "^12.5.0",
     "lodash": "^4.17.11",
     "logrocket": "^1.0.3",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-facebook-login": "^4.1.1",
     "react-router-dom": "^4.3.1",
     "use-persisted-reducer": "^2.1.0"
   },
