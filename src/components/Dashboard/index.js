@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import 'antd/dist/antd.css';
 import { Button, Table } from 'antd';
 import { get } from 'lodash';
@@ -98,6 +98,42 @@ function Dashboard(props) {
     }),
   };
 
+  const modalContent = modal => (
+    <Fragment>
+      <Typography className="modal-question">
+        {`${delFollowers.length} followers
+          will be deleted at all! Are you sure?`}
+      </Typography>
+      <div className="modal-nav">
+        <Button
+          type="primary"
+          style={{
+            border: 'red',
+            backgroundColor: 'red',
+          }}
+          onClick={sendDeleteFollowerRequest}
+        >
+          YES
+        </Button>
+        <Button
+          type="primary"
+          style={{
+            border: 'green',
+            backgroundColor: 'green',
+          }}
+          onClick={modal.current.close}
+        >
+          NO
+        </Button>
+      </div>
+    </Fragment>
+  );
+
+  const confirmationOnDelete = () => {
+    props.setModalContent(modalContent(props.modal));
+    props.modal.current.open();
+  };
+
   const sendDeleteFollowerRequest = useCallback(async () => {
     if (isSending) return;
     setIsSending(true);
@@ -108,7 +144,10 @@ function Dashboard(props) {
       mode: 'cors',
       cache: 'default',
     })
-      .then(data => [200, 201].includes(data.status) && setExecFetch(true))
+      .then(data => {
+        props.modal.current.close();
+        [200, 201].includes(data.status) && setExecFetch(true);
+      })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
   }, [delFollowers]);
@@ -142,7 +181,7 @@ function Dashboard(props) {
                         border: 'red',
                         backgroundColor: 'red',
                       }}
-                      onClick={sendDeleteFollowerRequest}
+                      onClick={confirmationOnDelete}
                     >
                       Delete
                     </Button>
