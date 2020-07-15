@@ -74,6 +74,16 @@ function Dashboard(props) {
       render: text => text,
     },
     {
+      title: 'date',
+      dataIndex: 'date',
+      render: text => text,
+    },
+    {
+      title: 'time',
+      dataIndex: 'time',
+      render: text => text,
+    },
+    {
       title: 'join',
       dataIndex: 'createdAt',
       render: text => text.slice(0, 10),
