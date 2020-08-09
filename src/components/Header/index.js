@@ -49,7 +49,9 @@ function Head(props) {
               />
             </Grid>
             <Grid item xs={10} sm={10} className="container-info-title">
-              <Typography className="info-title">LET'S TALK ENGLISH</Typography>
+              <Typography className="info-title">
+                LET'S TALK TOGETHER
+              </Typography>
             </Grid>
           </Grid>
           {!checkAuth() && (

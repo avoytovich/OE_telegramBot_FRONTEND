@@ -24,6 +24,15 @@
   font-size: 22px;
 }
 
+.modal .modal-body .modal-invitation {
+  margin: auto;
+  width: 35%;
+}
+
+.modal .modal-body .modal-invitation label {
+  padding: 0px 5px;
+}
+
 .modal .modal-body .modal-nav {
   margin: 25px;
   display: flex;

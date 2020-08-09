@@ -47,6 +47,10 @@ module.exports = {
         test: /\.ico$/,
         loader: 'file-loader?name=[name].[ext]', // <-- retain original file name
       },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
+      },
     ],
   },
   resolve: {
