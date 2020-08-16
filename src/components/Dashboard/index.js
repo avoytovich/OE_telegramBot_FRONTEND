@@ -159,7 +159,12 @@ function Dashboard(props) {
     })
       .then(data => {
         props.modal.current.close();
-        [200, 201].includes(data.status) && setExecFetch(true);
+        if ([200, 201].includes(data.status)) {
+          props.dispatchSuccessNotifiction('successNotification', {
+            message: 'follower was successfully deleted',
+          });
+          setExecFetch(true);
+        }
       })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
@@ -232,7 +237,13 @@ function Dashboard(props) {
         mode: 'cors',
         cache: 'default',
       })
-        .then(data => props.modal.current.close())
+        .then(data => {
+          props.modal.current.close();
+          [200, 201].includes(data.status) &&
+            props.dispatchSuccessNotifiction('successNotification', {
+              message: 'invitation was successfully sent',
+            });
+        })
         .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
       setIsSending(false);
     },
