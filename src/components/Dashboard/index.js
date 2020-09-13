@@ -159,7 +159,12 @@ function Dashboard(props) {
     })
       .then(data => {
         props.modal.current.close();
-        [200, 201].includes(data.status) && setExecFetch(true);
+        if ([200, 201].includes(data.status)) {
+          props.dispatchSuccessNotifiction('successNotification', {
+            message: 'follower was successfully deleted',
+          });
+          setExecFetch(true);
+        }
       })
       .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
     setIsSending(false);
@@ -182,13 +187,28 @@ function Dashboard(props) {
       placeholder: '',
     },
     {
+      label: 'Date',
+      type: 'date',
+      placeholder: '',
+    },
+    {
+      label: 'Time',
+      type: 'time',
+      placeholder: '',
+    },
+    {
       label: 'video',
       type: 'url',
       placeholder: '',
     },
   ];
 
-  let meetingLink, meetingId, meetingPasscode, videoLink;
+  let meetingLink,
+    meetingId,
+    meetingPasscode,
+    meetingDate,
+    meetingTime,
+    videoLink;
 
   const handleChange = (value, label) => {
     switch (label) {
@@ -200,6 +220,12 @@ function Dashboard(props) {
         break;
       case 'Passcode':
         meetingPasscode = value;
+        break;
+      case 'Date':
+        meetingDate = value;
+        break;
+      case 'Time':
+        meetingTime = value;
         break;
       case 'video':
         videoLink = value;
@@ -214,10 +240,7 @@ function Dashboard(props) {
       setIsSending(true);
       const newInvitation = invitation
         .replace('#meetingGreeting', `Hi, ${selectedFollowers[0].first_name}!`)
-        .replace(
-          '#meetingTime',
-          `${selectedFollowers[0].time} ${selectedFollowers[0].date}`
-        )
+        .replace('#meetingTime', `${meetingTime} ${meetingDate}`)
         .replace('#meetingLink', `${meetingLink}`)
         .replace('#meetingId', `${meetingId}`)
         .replace('#meetingPasscode', `${meetingPasscode}`)
@@ -232,7 +255,13 @@ function Dashboard(props) {
         mode: 'cors',
         cache: 'default',
       })
-        .then(data => props.modal.current.close())
+        .then(data => {
+          props.modal.current.close();
+          [200, 201].includes(data.status) &&
+            props.dispatchSuccessNotifiction('successNotification', {
+              message: 'invitation was successfully sent',
+            });
+        })
         .catch(e => props.dispatchErrorNotifiction('errorNotification', e));
       setIsSending(false);
     },
